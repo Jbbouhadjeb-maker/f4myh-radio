@@ -1,6 +1,6 @@
 /* ==========================================
    F4MYH - Amateur Radio Station
-   Apple / Space / Engineering Design
+   Apple Space Engineering Design V2
 ========================================== */
 
 
@@ -29,7 +29,6 @@ body{
     Arial,
     sans-serif;
 
-
     background:#050505;
 
     color:white;
@@ -37,6 +36,47 @@ body{
     overflow-x:hidden;
 
 }
+
+
+
+/* ==========================================
+   GLOBAL BACKGROUND
+========================================== */
+
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    width:900px;
+
+    height:900px;
+
+    border-radius:50%;
+
+    background:
+
+    radial-gradient(
+        circle,
+        rgba(41,151,255,.25),
+        transparent 65%
+    );
+
+
+    filter:blur(80px);
+
+    top:-200px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    z-index:-1;
+
+}
+
 
 
 
@@ -49,35 +89,27 @@ body{
 
 .hero{
 
-
-    height:100vh;
-
+    min-height:100vh;
 
     display:flex;
 
-
     justify-content:center;
-
 
     align-items:center;
 
-
     text-align:center;
 
-
     position:relative;
-
 
     overflow:hidden;
 
 
     background:
 
-
     radial-gradient(
-        circle at 50% 30%,
-        #1d5fa7 0%,
-        #102d50 30%,
+        circle at 50% 25%,
+        #174d85 0%,
+        #0b2440 35%,
         #050505 75%
     );
 
@@ -85,75 +117,59 @@ body{
 
 
 
-.hero::before{
-
+.hero::after{
 
     content:"";
 
-
     position:absolute;
 
+    width:700px;
 
-    width:900px;
-
-
-    height:900px;
-
+    height:700px;
 
     border-radius:50%;
 
-
     background:
-
 
     radial-gradient(
         circle,
-        rgba(41,151,255,.35),
-        transparent 65%
+        rgba(0,122,255,.35),
+        transparent 70%
     );
-
 
     filter:blur(70px);
 
-
     animation:pulse 8s infinite;
 
-
 }
-
 
 
 
 .hero-content{
 
-
     position:relative;
 
     z-index:2;
 
-    animation:appear 1.5s ease;
+    animation:fade 1.5s ease;
 
 }
+
 
 
 
 
 .small-title{
 
-
     color:#2997ff;
-
 
     letter-spacing:8px;
 
-
     font-size:14px;
-
 
     text-transform:uppercase;
 
 }
-
 
 
 
@@ -173,7 +189,6 @@ body{
 
     background:
 
-
     linear-gradient(
         white,
         #8e8e93
@@ -184,7 +199,6 @@ body{
 
     color:transparent;
 
-
 }
 
 
@@ -192,14 +206,11 @@ body{
 
 .hero h2{
 
-
     font-size:
 
     clamp(45px,7vw,90px);
 
-
     letter-spacing:-5px;
-
 
 }
 
@@ -207,12 +218,9 @@ body{
 
 .subtitle{
 
-
-    margin-top:30px;
-
+    margin-top:35px;
 
     font-size:24px;
-
 
     color:#c7c7cc;
 
@@ -224,7 +232,9 @@ body{
 
 
 
-/* BUTTON */
+/* ==========================================
+   BUTTON
+========================================== */
 
 
 .button{
@@ -232,27 +242,19 @@ body{
 
     display:inline-block;
 
-
     margin-top:50px;
-
 
     padding:18px 45px;
 
-
     border-radius:50px;
-
 
     background:#2997ff;
 
-
     color:white;
-
 
     text-decoration:none;
 
-
     font-weight:600;
-
 
     transition:.4s;
 
@@ -263,9 +265,7 @@ body{
 
 .button:hover{
 
-
-    transform:translateY(-8px) scale(1.05);
-
+    transform:translateY(-8px);
 
     background:#147ce5;
 
@@ -284,9 +284,7 @@ body{
 
 section{
 
-
     padding:140px 8%;
-
 
 }
 
@@ -294,18 +292,13 @@ section{
 
 .label{
 
-
     color:#2997ff;
-
 
     letter-spacing:7px;
 
-
     font-size:14px;
 
-
     text-transform:uppercase;
-
 
 }
 
@@ -313,17 +306,13 @@ section{
 
 section h2{
 
-
-    margin:35px 0;
-
-
     font-size:
 
     clamp(50px,7vw,100px);
 
-
     letter-spacing:-6px;
 
+    margin:35px 0;
 
 }
 
@@ -331,20 +320,13 @@ section h2{
 
 section p{
 
-
-    max-width:900px;
-
+    color:#c7c7cc;
 
     font-size:22px;
 
-
     line-height:1.7;
 
-
-    color:#c7c7cc;
-
 }
-
 
 
 
@@ -358,9 +340,7 @@ section p{
 
 .about{
 
-
     text-align:center;
-
 
 }
 
@@ -368,9 +348,9 @@ section p{
 
 .about p{
 
+    max-width:850px;
 
     margin:auto;
-
 
 }
 
@@ -387,16 +367,13 @@ section p{
 
 .dark{
 
-
     background:
-
 
     radial-gradient(
         circle at top,
         #102b4b,
-        #050505 60%
+        #050505 70%
     );
-
 
 }
 
@@ -407,15 +384,13 @@ section p{
 
 
 /* ==========================================
-   CARDS
+   CARDS GLASS APPLE
 ========================================== */
 
 
 .cards{
 
-
     display:grid;
-
 
     grid-template-columns:
 
@@ -424,9 +399,7 @@ section p{
 
     gap:35px;
 
-
     margin-top:80px;
-
 
 }
 
@@ -443,7 +416,6 @@ section p{
 
     background:
 
-
     rgba(255,255,255,.08);
 
 
@@ -452,7 +424,7 @@ section p{
     1px solid rgba(255,255,255,.15);
 
 
-    backdrop-filter:blur(20px);
+    backdrop-filter:blur(25px);
 
 
     transition:.5s;
@@ -465,14 +437,12 @@ section p{
 .card:hover{
 
 
-    transform:
-
-    translateY(-15px);
+    transform:translateY(-15px);
 
 
     background:
 
-    rgba(255,255,255,.14);
+    rgba(255,255,255,.15);
 
 
 }
@@ -481,19 +451,15 @@ section p{
 
 .card h3{
 
-
     font-size:32px;
 
-
     margin-bottom:20px;
-
 
 }
 
 
 
 .card p{
-
 
     font-size:18px;
 
@@ -505,17 +471,14 @@ section p{
 
 
 
-
 /* ==========================================
-   IMAGES
+   IMAGE GALLERY
 ========================================== */
 
 
 .images{
 
-
     display:grid;
-
 
     grid-template-columns:
 
@@ -527,7 +490,6 @@ section p{
 
     margin-top:80px;
 
-
 }
 
 
@@ -536,13 +498,13 @@ section p{
 .image-box{
 
 
-    overflow:hidden;
-
-
     border-radius:35px;
 
 
-    background:#111;
+    overflow:hidden;
+
+
+    background:#080808;
 
 
     border:
@@ -557,13 +519,13 @@ section p{
 
 
 
+
 .image-box:hover{
 
-
-    transform:translateY(-12px);
-
+    transform:translateY(-15px);
 
 }
+
 
 
 
@@ -578,10 +540,13 @@ section p{
     height:350px;
 
 
-    object-fit:cover;
+    object-fit:contain;
 
 
-    transition:.7s;
+    background:#000;
+
+
+    transition:.6s;
 
 
 }
@@ -591,11 +556,9 @@ section p{
 .image-box:hover img{
 
 
-    transform:scale(1.08);
-
+    transform:scale(1.04);
 
 }
-
 
 
 
@@ -609,7 +572,6 @@ section p{
 
 
     font-size:18px;
-
 
 }
 
@@ -657,9 +619,7 @@ footer h2{
 
 footer p{
 
-
     color:#888;
-
 
 }
 
@@ -670,12 +630,9 @@ footer strong{
 
     display:block;
 
-
     margin-top:30px;
 
-
     font-size:30px;
-
 
 }
 
@@ -690,25 +647,25 @@ footer strong{
 ========================================== */
 
 
-@keyframes appear{
+@keyframes fade{
 
 
-    from{
+from{
 
-        opacity:0;
+opacity:0;
 
-        transform:translateY(50px);
+transform:translateY(40px);
 
-    }
+}
 
 
-    to{
+to{
 
-        opacity:1;
+opacity:1;
 
-        transform:translateY(0);
+transform:translateY(0);
 
-    }
+}
 
 }
 
@@ -717,18 +674,18 @@ footer strong{
 @keyframes pulse{
 
 
-    0%,100%{
+0%,100%{
 
-        transform:translate(-50%,-50%) scale(1);
+transform:scale(1);
 
-    }
+}
 
 
-    50%{
+50%{
 
-        transform:translate(-50%,-50%) scale(1.15);
+transform:scale(1.15);
 
-    }
+}
 
 }
 
@@ -748,8 +705,7 @@ footer strong{
 
 .cards{
 
-
-    grid-template-columns:1fr;
+grid-template-columns:1fr;
 
 }
 
@@ -757,8 +713,7 @@ footer strong{
 
 .images{
 
-
-    grid-template-columns:1fr;
+grid-template-columns:1fr;
 
 }
 
@@ -766,8 +721,7 @@ footer strong{
 
 .hero h1{
 
-
-    letter-spacing:-8px;
+letter-spacing:-8px;
 
 }
 
@@ -775,8 +729,7 @@ footer strong{
 
 section{
 
-
-    padding:90px 25px;
+padding:90px 25px;
 
 }
 
