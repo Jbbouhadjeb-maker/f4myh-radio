@@ -1,7 +1,38 @@
 /* ==========================================
    F4MYH - Mission Control V7
-   QSO Network System
 ========================================== */
+
+
+/*
+    LOCAL QRZ CONFIG
+
+    NE PAS METTRE SUR GITHUB
+
+    Les clés doivent normalement être
+    utilisées côté serveur.
+*/
+
+const QRZ_CONFIG = {
+
+    stations: {
+
+        "F4MYH": {
+            callsign:"F4MYH",
+            apiKey:"7A95-D46F-BA03-DF11"
+        },
+
+
+        "9A/F4MYH": {
+            callsign:"9A/F4MYH",
+            apiKey:"6998-8E54-7255-6607"
+        }
+
+    }
+
+};
+
+
+
 
 
 /* ==========================================
@@ -9,62 +40,76 @@
 ========================================== */
 
 
-const typing = document.querySelector(".typing");
+const typing=document.querySelector(".typing");
 
 
-const messages = [
-    "Initializing station...",
-    "Loading antennas...",
-    "Connecting satellites...",
-    "Scanning HF bands...",
-    "System online ✓"
+const messages=[
+
+"Initializing station...",
+"Loading antennas...",
+"Connecting satellites...",
+"Scanning HF bands...",
+"System online ✓"
+
 ];
 
 
-let messageIndex = 0;
-let charIndex = 0;
+let messageIndex=0;
+let charIndex=0;
+
 
 
 function typeWriter(){
 
-    if(!typing) return;
+
+if(!typing)return;
 
 
-    if(charIndex < messages[messageIndex].length){
+if(charIndex < messages[messageIndex].length){
 
-        typing.textContent += messages[messageIndex][charIndex];
 
-        charIndex++;
+typing.textContent += messages[messageIndex][charIndex];
 
-        setTimeout(typeWriter,55);
+charIndex++;
 
-    }else{
+setTimeout(typeWriter,55);
 
-        setTimeout(()=>{
-
-            typing.textContent="";
-
-            charIndex=0;
-
-            messageIndex++;
-
-            if(messageIndex >= messages.length){
-                messageIndex=0;
-            }
-
-            typeWriter();
-
-        },1200);
-
-    }
 
 }
+
+else{
+
+
+setTimeout(()=>{
+
+typing.textContent="";
+
+charIndex=0;
+
+messageIndex++;
+
+
+if(messageIndex>=messages.length)
+messageIndex=0;
+
+
+typeWriter();
+
+
+},1200);
+
+
+}
+
+
+}
+
 
 
 if(typing){
 
-    typing.textContent="";
-    typeWriter();
+typing.textContent="";
+typeWriter();
 
 }
 
@@ -77,168 +122,42 @@ if(typing){
 
 
 /* ==========================================
-   SCROLL ANIMATION
-========================================== */
-
-
-const revealElements =
-document.querySelectorAll(
-".about, .timeline, .qso-map, .projects, .gallery, .social"
-);
-
-
-
-const observer =
-new IntersectionObserver(
-(entries)=>{
-
-entries.forEach(entry=>{
-
-    if(entry.isIntersecting){
-
-        entry.target.style.opacity="1";
-
-        entry.target.style.transform=
-        "translateY(0)";
-
-    }
-
-});
-
-},
-{
-threshold:.15
-});
-
-
-
-revealElements.forEach(el=>{
-
-    el.style.opacity="0";
-
-    el.style.transform="translateY(30px)";
-
-    el.style.transition=
-    "all .8s ease";
-
-    observer.observe(el);
-
-});
-
-
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   QSO MAP
+   MAP SYSTEM
 ========================================== */
 
 
 let map;
 
-
-let currentLayers=[];
-
+let layers=[];
 
 
-let allQSOs=[];
-
-
-
-let activeStation="F4MYH";
-
-
+let qsoData=[];
 
 
 
 function initMap(){
 
 
-
-    map =
-    L.map("map")
-    .setView(
-        [45,10],
-        3
-    );
+map=L.map("map")
+.setView(
+[45,10],
+3
+);
 
 
 
-    L.tileLayer(
+L.tileLayer(
 
-    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
 
-    {
+{
 
-    attribution:
-    "© OpenStreetMap © CARTO"
-
-    }
-
-    )
-
-    .addTo(map);
+attribution:
+"© OpenStreetMap © CARTO"
 
 }
 
-
-
-
-
-function clearMap(){
-
-
-    currentLayers.forEach(layer=>{
-
-        map.removeLayer(layer);
-
-    });
-
-
-    currentLayers=[];
-
-}
-
-
-
-
-
-
-
-function stationMarker(station){
-
-
-    let marker =
-    L.marker(
-    [
-    station.lat,
-    station.lon
-    ]
-    )
-
-    .addTo(map);
-
-
-
-    marker.bindPopup(`
-
-    <h3>
-    📡 ${station.call}
-    </h3>
-
-    ${station.location}
-
-    `);
-
-
-
-    currentLayers.push(marker);
+).addTo(map);
 
 
 }
@@ -249,146 +168,152 @@ function stationMarker(station){
 
 
 
-function drawQSOs(stationName){
+function clearLayers(){
 
 
+layers.forEach(layer=>{
 
-    clearMap();
+map.removeLayer(layer);
 
+});
 
 
-    let filtered;
+layers=[];
 
 
+}
 
-    if(stationName==="ALL"){
 
 
-        filtered=allQSOs;
 
 
-    }else{
 
 
-        filtered =
-        allQSOs.filter(
-        qso =>
-        qso.station === stationName
-        );
+function displayQSOs(station){
 
 
-    }
 
+clearLayers();
 
 
 
+let qsos;
 
-    filtered.forEach(qso=>{
 
+if(station==="ALL"){
 
+qsos=qsoData;
 
-        let marker =
-        L.marker(
+}
 
-        [
-        qso.lat,
-        qso.lon
-        ]
+else{
 
-        )
+qsos=qsoData.filter(
+q=>q.station===station
+);
 
-        .addTo(map);
+}
 
 
 
 
-        marker.bindPopup(`
+qsos.forEach(qso=>{
 
-        <b>
-        ${qso.call}
-        </b>
-        <br><br>
 
-        Country:
-        ${qso.country}
+let marker=
+L.marker(
 
-        <br>
+[
+qso.lat,
+qso.lon
+]
 
-        Band:
-        ${qso.band}
+)
 
-        <br>
+.addTo(map);
 
-        Mode:
-        ${qso.mode}
 
-        <br>
 
-        Date:
-        ${qso.date}
+marker.bindPopup(`
 
-        <br>
+<h3>
+${qso.call}
+</h3>
 
-        Distance:
-        ${qso.distance} km
+Country :
+${qso.country}
 
-        `);
+<br>
 
+Band :
+${qso.band}
 
+<br>
 
+Mode :
+${qso.mode}
 
+<br>
 
-        let line =
-        L.polyline(
+Date :
+${qso.date}
 
-        [
+<br>
 
-        [
-        qso.stationLat,
-        qso.stationLon
-        ],
+Distance :
+${qso.distance} km
 
-        [
-        qso.lat,
-        qso.lon
-        ]
+`);
 
-        ],
 
-        {
 
-        color:"#2997ff",
 
-        weight:2,
 
-        opacity:.8
+let line=
+L.polyline(
 
-        }
+[
 
-        )
+[
+qso.stationLat,
+qso.stationLon
+],
 
-        .addTo(map);
+[
+qso.lat,
+qso.lon
+]
 
+],
 
+{
 
-        currentLayers.push(
-        marker,
-        line
-        );
+color:"#2997ff",
 
+weight:2
 
+}
 
-    });
+)
 
+.addTo(map);
 
 
 
+layers.push(marker,line);
 
-    updateStats(filtered);
+
+
+});
+
+
+
+updateStats(qsos);
 
 
 
 }
+
 
 
 
@@ -400,49 +325,67 @@ function drawQSOs(stationName){
 function updateStats(qsos){
 
 
-    document
-    .getElementById("qso-number")
-    .textContent =
-    qsos.length;
+let qsoNumber =
+document.getElementById(
+"qso-number"
+);
 
 
-
-    let countries =
-    new Set(
-    qsos.map(
-    q=>q.country
-    )
-    );
+let countryNumber =
+document.getElementById(
+"country-number"
+);
 
 
-    document
-    .getElementById("country-number")
-    .textContent =
-    countries.size;
+let dxNumber =
+document.getElementById(
+"dx-number"
+);
 
 
 
 
 
-    let max = 0;
-
-
-    qsos.forEach(q=>{
-
-        if(q.distance > max){
-
-            max=q.distance;
-
-        }
-
-    });
+if(qsoNumber)
+qsoNumber.textContent=qsos.length;
 
 
 
-    document
-    .getElementById("dx-number")
-    .textContent =
-    max+" km";
+
+if(countryNumber){
+
+let countries=
+new Set(
+qsos.map(q=>q.country)
+);
+
+countryNumber.textContent=
+countries.size;
+
+}
+
+
+
+
+
+if(dxNumber){
+
+let max=0;
+
+
+qsos.forEach(q=>{
+
+if(q.distance>max)
+max=q.distance;
+
+});
+
+
+dxNumber.textContent=
+max+" km";
+
+}
+
 
 }
 
@@ -455,7 +398,7 @@ function updateStats(qsos){
 
 
 /* ==========================================
-   LOAD DATA
+   LOAD LOCAL DATA
 ========================================== */
 
 
@@ -466,15 +409,13 @@ fetch("qso-data.json")
 .then(data=>{
 
 
-    allQSOs=data;
+qsoData=data;
 
 
-
-    initMap();
-
+initMap();
 
 
-    drawQSOs("F4MYH");
+displayQSOs("F4MYH");
 
 
 })
@@ -483,7 +424,7 @@ fetch("qso-data.json")
 
 
 console.error(
-"QSO loading error:",
+"QSO data error:",
 error
 );
 
@@ -509,17 +450,17 @@ document
 
 
 button.addEventListener(
+
 "click",
+
 ()=>{
 
 
 document
 .querySelectorAll(".station-btn")
-.forEach(btn=>{
-
-btn.classList.remove("active");
-
-});
+.forEach(btn=>
+btn.classList.remove("active")
+);
 
 
 
@@ -527,13 +468,15 @@ button.classList.add("active");
 
 
 
-drawQSOs(
+displayQSOs(
 button.dataset.station
 );
 
 
 
-});
+}
+
+);
 
 
 });
