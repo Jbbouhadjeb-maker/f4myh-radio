@@ -11,7 +11,7 @@
 
 <link rel="stylesheet" href="style.css">
 
-<!-- QSO MAP -->
+<!-- Leaflet QSO Map -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 
 </head>
@@ -21,6 +21,7 @@
 
 
 <div id="stars"></div>
+
 
 
 <header class="hero">
@@ -59,7 +60,6 @@ Enter Station
 </a>
 
 
-
 </div>
 
 
@@ -69,7 +69,12 @@ Enter Station
 
 
 
+
+
+
+
 <!-- ABOUT -->
+
 
 <section class="about">
 
@@ -101,11 +106,11 @@ space communication and building my station step by step.
 </p>
 
 
+
 <p>
 My goal is to experiment, learn and continuously improve my
 skills through new projects and on-air experiences.
 </p>
-
 
 
 </div>
@@ -122,9 +127,11 @@ Station Status
 </h3>
 
 
+
 <p>
 📡 HF Operations
 </p>
+
 
 
 <p>
@@ -136,10 +143,12 @@ Station Status
 </div>
 
 
+
 </div>
 
 
 </section>
+
 
 
 
@@ -167,6 +176,7 @@ Remote Ham Radio
 
 
 
+
 <div class="rhr-content">
 
 
@@ -176,7 +186,6 @@ Remote Ham Radio
 <h3>
 📡 RemoteHamRadio (RHR)
 </h3>
-
 
 
 
@@ -195,6 +204,8 @@ stations located in low-noise environments, allowing me to:
 
 
 
+
+
 <ul>
 
 
@@ -203,14 +214,17 @@ Operate on multiple HF bands under excellent conditions
 </li>
 
 
+
 <li>
 Improve my pile-up handling and DX operating skills
 </li>
 
 
+
 <li>
 Gain experience with different station setups and antennas
 </li>
+
 
 
 <li>
@@ -219,7 +233,6 @@ Make contacts that would be difficult from my home QTH
 
 
 </ul>
-
 
 
 
@@ -239,14 +252,6 @@ me progress faster in the hobby.
 
 
 </section>
-
-
-
-
-
-
-
-
 <!-- JOURNEY -->
 
 
@@ -267,7 +272,6 @@ Evolution
 
 
 <div class="line">
-
 
 
 <div class="event">
@@ -381,6 +385,8 @@ Global Contacts
 
 
 
+
+
 <div class="station-selector">
 
 
@@ -406,7 +412,10 @@ ALL STATIONS 🌍
 
 
 
+
+
 <div id="map"></div>
+
 
 
 
@@ -428,6 +437,7 @@ QSO
 
 
 
+
 <div class="glass">
 
 <h3 id="country-number">
@@ -439,6 +449,7 @@ Countries
 </p>
 
 </div>
+
 
 
 
@@ -459,7 +470,17 @@ Longest DX
 </div>
 
 
+
 </section>
+
+
+
+
+
+
+
+
+
 <!-- PROJECTS -->
 
 
@@ -491,7 +512,7 @@ Engineering Projects
 <div class="card">
 
 
-<img src="antenna.jpg">
+<img src="antenna.jpg" alt="QFH Antenna">
 
 
 
@@ -526,7 +547,7 @@ Design and construction of a satellite reception antenna.
 <div class="card">
 
 
-<img src="meteor.jpg">
+<img src="meteor.jpg" alt="METEOR Satellite">
 
 
 
@@ -561,7 +582,7 @@ Receiving images directly from space.
 <div class="card">
 
 
-<img src="finland.jpg">
+<img src="finland.jpg" alt="OH F4MYH Finland">
 
 
 
@@ -596,15 +617,6 @@ HF operation from Northern Europe.
 
 
 </section>
-
-
-
-
-
-
-
-
-
 <!-- GALLERY -->
 
 
@@ -629,33 +641,19 @@ Station Archive
 <div class="gallery-grid">
 
 
-<img src="qfh-build-2.jpg">
+<img src="qfh-build-2.jpg" alt="QFH build">
+
+<img src="setup.jpg" alt="Radio setup">
+
+<img src="IMG_6353-preview.jpg" alt="Station photo">
+
+<img src="qfh-build-1.jpg" alt="QFH construction">
+
+<img src="base.jpg" alt="Base station">
 
 
 
-<img src="setup.jpg">
-
-
-
-<img src="IMG_6353-preview.jpg">
-
-
-  
-<img src="qfh-build-1.jpg">
-
-  
-  
-<img src="base.jpg">
-
-  
-
-
-
-
-
-  
 </div>
-
 
 
 
@@ -754,24 +752,29 @@ F4MYH
 
 
 
-<!-- LEAFLET QSO MAP -->
+<!-- LEAFLET -->
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 
-<!-- MAIN SCRIPT -->
+
+<!-- MAIN JAVASCRIPT -->
 
 <script src="script.js"></script>
+
+
+
 
 
 
 <!-- Cloudflare Web Analytics -->
 
 <script 
-type='module' 
-src='https://static.cloudflareinsights.com/beacon.min.js' 
-data-cf-beacon='{"token": "04c7bd7cb542414584e60411135bc99b"}'>
+type="module" 
+src="https://static.cloudflareinsights.com/beacon.min.js" 
+data-cf-beacon='{"token":"04c7bd7cb542414584e60411135bc99b"}'>
 </script>
+
 
 
 </body>
