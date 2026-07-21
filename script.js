@@ -1,6 +1,6 @@
 /* ==========================================
-   F4MYH - Mission Control V10
-   ADIF + Leaflet + Auto Callsign Lookup
+   F4MYH - Mission Control V11
+   Local ADIF + Leaflet + Callsign Database
 ========================================== */
 
 
@@ -25,6 +25,7 @@ const STATION_CONFIG = {
 
 
 
+
 /* ==========================================
    GLOBAL VARIABLES
 ========================================== */
@@ -44,12 +45,15 @@ let callsignDB={};
 
 
 
+
 /* ==========================================
    TYPEWRITER
 ========================================== */
 
 
-const typing=document.querySelector(".typing");
+const typing =
+document.querySelector(".typing");
+
 
 
 const messages=[
@@ -67,9 +71,12 @@ const messages=[
 ];
 
 
+
 let messageIndex=0;
 
 let charIndex=0;
+
+
 
 
 
@@ -93,8 +100,11 @@ function typeWriter(){
 
 
         setTimeout(
+
             typeWriter,
+
             55
+
         );
 
 
@@ -204,127 +214,37 @@ async function loadCallsignDatabase(){
 
 
 /* ==========================================
-   AUTO CALLSIGN LOOKUP
+   CALLSIGN LOOKUP LOCAL
 ========================================== */
 
 
 async function getCallsignCoordinates(call){
 
 
-    // Base locale
-    if(callsignDB[call]){
-
-        return callsignDB[call];
-
-    }
+    const cleanCall =
+    call
+    .trim()
+    .toUpperCase();
 
 
 
-    try{
+    if(callsignDB[cleanCall]){
 
 
-        const response =
-        await fetch(
-
-            "https://api.hamdb.org/"
-            +
-            call
-            +
-            "/json"
-
-        );
-
-
-
-        const data =
-        await response.json();
-
-
-
-        if(
-
-            data &&
-            data.hamdb &&
-            data.hamdb.callsign
-
-        ){
-
-
-            const info =
-            data.hamdb.callsign;
-
-
-
-            const coords={
-
-
-                country:
-                info.country || "Unknown",
-
-
-                lat:
-                parseFloat(
-                    info.latitude
-                ),
-
-
-                lon:
-                parseFloat(
-                    info.longitude
-                )
-
-
-            };
-
-
-
-            if(
-
-                !isNaN(coords.lat) &&
-                !isNaN(coords.lon)
-
-            ){
-
-
-                callsignDB[call]=coords;
-
-
-
-                console.log(
-
-                    "Auto location",
-
-                    call,
-
-                    coords
-
-                );
-
-
-
-                return coords;
-
-
-            }
-
-
-        }
+        return callsignDB[cleanCall];
 
 
     }
-    catch(error){
 
 
-        console.log(
 
-            "Lookup failed",
+    console.log(
 
-            call
+        "Coordonnées manquantes:",
 
-        );
+        cleanCall
 
-
-    }
+    );
 
 
 
@@ -367,6 +287,7 @@ function initMap(){
         {
 
             attribution:
+
             "© OpenStreetMap © CARTO"
 
         }
@@ -445,20 +366,22 @@ lon2
     const R=6371;
 
 
-    const dLat=
+
+    const dLat =
     (lat2-lat1)
     *
     Math.PI/180;
 
 
-    const dLon=
+
+    const dLon =
     (lon2-lon1)
     *
     Math.PI/180;
 
 
 
-    const a=
+    const a =
 
     Math.sin(dLat/2)
     *
@@ -517,7 +440,11 @@ station
     for(const record of records){
 
 
-        if(!record.toLowerCase().includes("<call"))
+        if(
+            !record
+            .toLowerCase()
+            .includes("<call")
+        )
 
             continue;
 
@@ -553,6 +480,7 @@ station
 
 
         }
+
 
 
 
@@ -606,48 +534,35 @@ station
 
         qsoData.push({
 
-
             station:station,
 
-
             call:call,
-
 
             country:
             coords.country,
 
-
             lat:
             coords.lat,
-
 
             lon:
             coords.lon,
 
-
             band:
             getADIF("band"),
-
 
             mode:
             getADIF("mode"),
 
-
             date:
             getADIF("qso_date"),
 
-
             distance:distance,
-
 
             stationLat:
             stationInfo.lat,
 
-
             stationLon:
             stationInfo.lon
-
-
 
         });
 
@@ -656,12 +571,19 @@ station
 
 
 
-
     console.log(
 
         "QSOs affichables:",
 
         qsoData.length
+
+    );
+
+
+
+    console.log(
+
+        qsoData
 
     );
 
@@ -682,7 +604,7 @@ station
 
 
 /* ==========================================
-   LOAD ADIF FILE
+   LOAD ADIF
 ========================================== */
 
 
@@ -780,12 +702,12 @@ function displayQSOs(){
 
         <h3>${qso.call}</h3>
 
-        Country :
+        Pays :
         ${qso.country}
 
         <br>
 
-        Band :
+        Bande :
         ${qso.band}
 
         <br>
@@ -804,6 +726,8 @@ function displayQSOs(){
         ${qso.distance} km
 
         `);
+
+
 
 
 
@@ -859,6 +783,31 @@ function displayQSOs(){
 
 
 
+    if(qsoData.length>0){
+
+
+        const group =
+        L.featureGroup(layers);
+
+
+
+        map.fitBounds(
+
+            group.getBounds(),
+
+            {
+
+                padding:[50,50]
+
+            }
+
+        );
+
+
+    }
+
+
+
     updateStats();
 
 
@@ -887,10 +836,12 @@ function updateStats(){
     );
 
 
+
     const countryNumber =
     document.getElementById(
         "country-number"
     );
+
 
 
     const dxNumber =
@@ -900,10 +851,12 @@ function updateStats(){
 
 
 
+
     if(qsoNumber)
 
         qsoNumber.textContent =
         qsoData.length;
+
 
 
 
@@ -931,10 +884,13 @@ function updateStats(){
 
 
 
+
+
     if(dxNumber){
 
 
         let max=0;
+
 
 
         qsoData.forEach(q=>{
@@ -989,6 +945,7 @@ async function startSystem(){
 
 
     await loadADIF();
+
 
 
 }
