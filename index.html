@@ -11,6 +11,9 @@
 
 <link rel="stylesheet" href="style.css">
 
+<!-- QSO MAP -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+
 </head>
 
 
@@ -18,9 +21,6 @@
 
 
 <div id="stars"></div>
-
-
-
 
 
 <header class="hero">
@@ -64,10 +64,6 @@ Enter Station
 
 
 </header>
-
-
-
-
 
 
 
@@ -140,7 +136,6 @@ Station Status
 </div>
 
 
-
 </div>
 
 
@@ -153,8 +148,7 @@ Station Status
 
 
 
-
-<!-- CURRENT STATION / RHR -->
+<!-- CURRENT STATION -->
 
 
 <section class="rhr">
@@ -201,8 +195,6 @@ stations located in low-noise environments, allowing me to:
 
 
 
-
-
 <ul>
 
 
@@ -211,11 +203,9 @@ Operate on multiple HF bands under excellent conditions
 </li>
 
 
-
 <li>
 Improve my pile-up handling and DX operating skills
 </li>
-
 
 
 <li>
@@ -223,11 +213,9 @@ Gain experience with different station setups and antennas
 </li>
 
 
-
 <li>
 Make contacts that would be difficult from my home QTH
 </li>
-
 
 
 </ul>
@@ -259,7 +247,6 @@ me progress faster in the hobby.
 
 
 
-
 <!-- JOURNEY -->
 
 
@@ -283,7 +270,6 @@ Evolution
 
 
 
-  
 <div class="event">
 
 
@@ -308,7 +294,8 @@ Receiving images from space using a QFH antenna.
 </div>
 
 
-  
+
+
 
 <div class="event">
 
@@ -332,6 +319,8 @@ Beginning of my radio adventure.
 
 
 </div>
+
+
 
 
 
@@ -360,7 +349,6 @@ HF operation from Northern Europe.
 
 
 
-
 </div>
 
 
@@ -375,6 +363,103 @@ HF operation from Northern Europe.
 
 
 
+<!-- QSO MAP -->
+
+
+<section class="qso-map">
+
+
+<p class="label">
+04 — QSO MAP
+</p>
+
+
+
+<h2>
+Global Contacts
+</h2>
+
+
+
+<div class="station-selector">
+
+
+<button class="station-btn active" data-station="F4MYH">
+F4MYH 🇫🇷
+</button>
+
+
+
+<button class="station-btn" data-station="9A/F4MYH">
+9A/F4MYH 🇭🇷
+</button>
+
+
+
+<button class="station-btn" data-station="ALL">
+ALL STATIONS 🌍
+</button>
+
+
+
+</div>
+
+
+
+<div id="map"></div>
+
+
+
+
+<div class="qso-stats">
+
+
+<div class="glass">
+
+<h3 id="qso-number">
+0
+</h3>
+
+<p>
+QSO
+</p>
+
+</div>
+
+
+
+<div class="glass">
+
+<h3 id="country-number">
+0
+</h3>
+
+<p>
+Countries
+</p>
+
+</div>
+
+
+
+<div class="glass">
+
+<h3 id="dx-number">
+0 km
+</h3>
+
+<p>
+Longest DX
+</p>
+
+</div>
+
+
+
+</div>
+
+
+</section>
 <!-- PROJECTS -->
 
 
@@ -382,7 +467,7 @@ HF operation from Northern Europe.
 
 
 <p class="label">
-04 — PROJECTS
+05 — PROJECTS
 </p>
 
 
@@ -527,7 +612,7 @@ HF operation from Northern Europe.
 
 
 <p class="label">
-05 — GALLERY
+06 — GALLERY
 </p>
 
 
@@ -591,7 +676,7 @@ Station Archive
 
 
 <p class="label">
-06 — CONTACT
+07 — CONTACT
 </p>
 
 
@@ -669,11 +754,26 @@ F4MYH
 
 
 
+<!-- LEAFLET QSO MAP -->
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+
+<!-- MAIN SCRIPT -->
+
 <script src="script.js"></script>
 
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "04c7bd7cb542414584e60411135bc99b"}'></script><!-- End Cloudflare Web Analytics -->
-  
-</body>
 
+
+<!-- Cloudflare Web Analytics -->
+
+<script 
+type='module' 
+src='https://static.cloudflareinsights.com/beacon.min.js' 
+data-cf-beacon='{"token": "04c7bd7cb542414584e60411135bc99b"}'>
+</script>
+
+
+</body>
 
 </html>
