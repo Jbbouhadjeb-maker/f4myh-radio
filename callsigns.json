@@ -1,7 +1,13 @@
 {
- "9A/F4MYH":{
-   "country":"Croatia",
-   "lat":43.5081,
-   "lon":16.4402
- }
+    "F4MYH": {
+        "country": "France",
+        "lat":48.8566,
+        "lon":2.3522
+    },
+
+    "9A/F4MYH": {
+        "country": "Croatia",
+        "lat":43.5081,
+        "lon":16.4402
+    }
 }
