@@ -1,6 +1,6 @@
 /* ==========================================
    F4MYH - Mission Control V11
-   ADIF + Leaflet + Local Callsign Database
+   9A/F4MYH ADIF + Leaflet
 ========================================== */
 
 
@@ -26,8 +26,6 @@ const STATION_CONFIG = {
 
 
 
-
-
 /* ==========================================
    GLOBAL VARIABLES
 ========================================== */
@@ -42,13 +40,9 @@ let callsignDB={};
 
 
 
-
-
-
 /* ==========================================
    TYPEWRITER
 ========================================== */
-
 
 const typing=document.querySelector(".typing");
 
@@ -59,9 +53,9 @@ const messages=[
 
     "Loading antennas...",
 
-    "Connecting satellites...",
-
     "Scanning HF bands...",
+
+    "Loading logbook...",
 
     "System online ✓"
 
@@ -78,6 +72,7 @@ function typeWriter(){
 
 
     if(!typing)
+
         return;
 
 
@@ -98,6 +93,7 @@ function typeWriter(){
 
 
     }
+
     else{
 
 
@@ -106,9 +102,7 @@ function typeWriter(){
 
             typing.textContent="";
 
-
             charIndex=0;
-
 
             messageIndex++;
 
@@ -126,7 +120,6 @@ function typeWriter(){
 
     }
 
-
 }
 
 
@@ -143,12 +136,9 @@ if(typing){
 
 
 
-
-
 /* ==========================================
    LOAD CALLSIGN DATABASE
 ========================================== */
-
 
 async function loadCallsignDatabase(){
 
@@ -160,10 +150,8 @@ async function loadCallsignDatabase(){
         await fetch("./callsigns.json");
 
 
-
         callsignDB =
         await response.json();
-
 
 
         console.log(
@@ -173,6 +161,7 @@ async function loadCallsignDatabase(){
 
 
     }
+
     catch(error){
 
 
@@ -192,12 +181,9 @@ async function loadCallsignDatabase(){
 
 
 
-
-
 /* ==========================================
    MAP INIT
 ========================================== */
-
 
 function initMap(){
 
@@ -231,9 +217,7 @@ function initMap(){
 
     setTimeout(()=>{
 
-
         map.invalidateSize();
-
 
     },500);
 
@@ -244,12 +228,9 @@ function initMap(){
 
 
 
-
-
 /* ==========================================
    CLEAR MAP
 ========================================== */
-
 
 function clearLayers(){
 
@@ -273,11 +254,9 @@ function clearLayers(){
 
 
 
-
 /* ==========================================
    DISTANCE
 ========================================== */
-
 
 function calculateDistance(
 
@@ -334,7 +313,9 @@ lon2
     return Math.round(
 
         R *
+
         2 *
+
         Math.atan2(
 
             Math.sqrt(a),
@@ -347,46 +328,110 @@ lon2
 
 
 }
+
+
+
+
+
+/* ==========================================
+   ADIF LOAD
+========================================== */
+
+async function loadADIF(){
+
+
+    try{
+
+
+        const response =
+
+        await fetch(
+
+        "https://raw.githubusercontent.com/Jbbouhadjeb-maker/f4myh-radio/main/logbook.adi"
+
+        );
+
+
+
+        const text =
+
+        await response.text();
+
+
+
+        console.log(
+
+            "ADI LOADED",
+
+            text.substring(0,300)
+
+        );
+
+
+
+        parseADIF(
+
+            text,
+
+            "9A/F4MYH"
+
+        );
+
+
+    }
+
+
+    catch(error){
+
+
+        console.error(
+
+            "ADI ERROR",
+
+            error
+
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
 /* ==========================================
    ADIF PARSER
 ========================================== */
 
+function parseADIF(
 
-async function parseADIF(data, station){
+data,
+
+station
+
+){
 
 
     qsoData=[];
 
 
     const records =
-    data.split(/<eor>/i);
+    data.split("<eor>");
 
 
 
-    const stationInfo =
-    STATION_CONFIG[station];
+    records.forEach(record=>{
 
 
+        if(
+            !record.toLowerCase()
+            .includes("<call")
+        )
 
-    if(!stationInfo){
-
-        console.error(
-            "Station inconnue",
-            station
-        );
-
-        return;
-
-    }
-
-
-
-    for(const record of records){
-
-
-        if(!record.toLowerCase().includes("<call"))
-
-            continue;
+            return;
 
 
 
@@ -397,10 +442,10 @@ async function parseADIF(data, station){
 
             new RegExp(
 
-                "<"+field+
-                ":[0-9]+>([^<]*)",
+            "<"+field+
+            ":[0-9]+>([^<]*)",
 
-                "i"
+            "i"
 
             );
 
@@ -411,25 +456,17 @@ async function parseADIF(data, station){
 
 
             return result ?
-
             result[1].trim()
-
             :
-
             "";
 
         }
 
 
 
+
         const call =
-        getADIF("call").toUpperCase();
-
-
-
-        if(!call)
-
-            continue;
+        getADIF("call");
 
 
 
@@ -438,28 +475,14 @@ async function parseADIF(data, station){
 
 
 
-        /*
-          Si le pays n'est pas dans
-          callsigns.json on ignore pas
-          le QSO, on met position inconnue
-        */
+        if(!coords)
+
+            return;
 
 
-        if(!coords){
 
-
-            console.log(
-                "Position inconnue:",
-                call
-            );
-
-
-            continue;
-
-
-        }
-
-
+        const stationInfo =
+        STATION_CONFIG[station];
 
 
 
@@ -479,61 +502,40 @@ async function parseADIF(data, station){
 
 
 
-
-
         qsoData.push({
-
-
-            station:station,
-
 
             call:call,
 
-
             country:
-            coords.country || "Unknown",
-
+            coords.country,
 
             lat:
             coords.lat,
 
-
             lon:
             coords.lon,
-
 
             band:
             getADIF("band"),
 
-
             mode:
             getADIF("mode"),
-
 
             date:
             getADIF("qso_date"),
 
-
-
             distance:distance,
-
 
             stationLat:
             stationInfo.lat,
 
-
             stationLon:
             stationInfo.lon
-
-
 
         });
 
 
-
-    }
-
-
+    });
 
 
 
@@ -546,97 +548,18 @@ async function parseADIF(data, station){
     );
 
 
-
     displayQSOs();
 
 
-
 }
-
-
-
-
-
-
-
-
-
-
 /* ==========================================
-   LOAD ADIF
+   DISPLAY QSOs
 ========================================== */
-
-
-async function loadADIF(){
-
-
-    try{
-
-
-        const response =
-        await fetch("./logbook.adi");
-
-
-
-        const text =
-        await response.text();
-
-
-
-        console.log(
-            "ADI LOADED",
-            text.substring(0,300)
-        );
-
-
-
-        await parseADIF(
-
-            text,
-
-            "9A/F4MYH"
-
-        );
-
-
-    }
-
-
-    catch(error){
-
-
-        console.error(
-            "ADI ERROR",
-            error
-        );
-
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   DISPLAY MAP
-========================================== */
-
 
 function displayQSOs(){
 
 
     clearLayers();
-
-
-
-    let bounds=[];
 
 
 
@@ -726,8 +649,6 @@ function displayQSOs(){
 
 
 
-
-
         layers.push(
 
             marker,
@@ -738,70 +659,40 @@ function displayQSOs(){
 
 
 
-        bounds.push([
-
-            qso.lat,
-
-            qso.lon
-
-        ]);
-
-
-
     });
 
 
 
-
-
-    /*
-       Ajout du point station
-    */
-
-
-    const stationMarker =
-
-    L.marker([
-
-        43.5081,
-
-        16.4402
-
-    ])
-
-    .addTo(map);
+    updateStats();
 
 
 
-    stationMarker.bindPopup(
-
-        "<b>9A/F4MYH</b><br>Croatia Station"
-
-    );
+    if(qsoData.length > 0){
 
 
+        const bounds =
 
-    layers.push(
+        L.latLngBounds(
 
-        stationMarker
+            qsoData.map(q=>[
 
-    );
+                q.lat,
 
+                q.lon
 
+            ])
 
-    bounds.push([
-
-        43.5081,
-
-        16.4402
-
-    ]);
+        );
 
 
+        bounds.extend([
 
+            STATION_CONFIG["9A/F4MYH"].lat,
 
+            STATION_CONFIG["9A/F4MYH"].lon
 
-    if(bounds.length){
+        ]);
+
 
 
         map.fitBounds(
@@ -820,16 +711,7 @@ function displayQSOs(){
     }
 
 
-
-    updateStats();
-
-
-
 }
-
-
-
-
 
 
 
@@ -838,7 +720,6 @@ function displayQSOs(){
 /* ==========================================
    STATS
 ========================================== */
-
 
 function updateStats(){
 
@@ -869,10 +750,11 @@ function updateStats(){
 
 
 
+
     if(countryNumber){
 
 
-        countryNumber.textContent =
+        const countries =
 
         new Set(
 
@@ -882,10 +764,15 @@ function updateStats(){
 
             )
 
-        ).size;
+        );
+
+
+        countryNumber.textContent =
+        countries.size;
 
 
     }
+
 
 
 
@@ -895,10 +782,11 @@ function updateStats(){
         let max=0;
 
 
+
         qsoData.forEach(q=>{
 
 
-            if(q.distance>max)
+            if(q.distance > max)
 
                 max=q.distance;
 
@@ -921,14 +809,9 @@ function updateStats(){
 
 
 
-
-
-
-
 /* ==========================================
-   START
+   START SYSTEM
 ========================================== */
-
 
 async function startSystem(){
 
@@ -950,8 +833,8 @@ async function startSystem(){
     await loadADIF();
 
 
-
 }
+
 
 
 
@@ -963,11 +846,9 @@ startSystem();
 
 
 
-
 /* ==========================================
    IMAGE LAZY LOAD
 ========================================== */
-
 
 document
 .querySelectorAll("img")
@@ -984,12 +865,9 @@ document
 
 
 
-
-
 /* ==========================================
    BUTTON PRESS
 ========================================== */
-
 
 document
 .querySelectorAll("a")
