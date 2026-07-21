@@ -73,8 +73,6 @@ body::before{
 
 
 
-
-
 #stars{
 
     position:fixed;
@@ -107,13 +105,11 @@ body::before{
 
 @keyframes starsMove{
 
-
 from{
 
 transform:translateY(0);
 
 }
-
 
 to{
 
@@ -121,8 +117,8 @@ transform:translateY(-500px);
 
 }
 
-
 }
+
 
 
 
@@ -136,21 +132,15 @@ transform:translateY(-500px);
 
 .hero{
 
-
     height:100vh;
-
 
     display:flex;
 
-
     justify-content:center;
-
 
     align-items:center;
 
-
     text-align:center;
-
 
 }
 
@@ -158,28 +148,21 @@ transform:translateY(-500px);
 
 .hero-content{
 
-
     animation:
     appear 1.2s ease;
-
 
 }
 
 
 
 
-
 .small-title{
-
 
     color:#2997ff;
 
-
     letter-spacing:8px;
 
-
     font-size:14px;
-
 
 }
 
@@ -194,9 +177,7 @@ transform:translateY(-500px);
     clamp(100px,22vw,280px);
 
 
-
     letter-spacing:-15px;
-
 
 
     margin:30px 0;
@@ -217,9 +198,7 @@ transform:translateY(-500px);
 
     color:transparent;
 
-
 }
-
 
 
 
@@ -232,7 +211,6 @@ transform:translateY(-500px);
 
 
     letter-spacing:-5px;
-
 
 }
 
@@ -249,8 +227,8 @@ transform:translateY(-500px);
 
     font-size:22px;
 
-
 }
+
 
 
 
@@ -264,7 +242,6 @@ transform:translateY(-500px);
 
 .button{
 
-
     display:inline-block;
 
 
@@ -274,13 +251,10 @@ transform:translateY(-500px);
     padding:18px 45px;
 
 
-
     border-radius:50px;
 
 
-
     background:#2997ff;
-
 
 
     color:white;
@@ -292,10 +266,7 @@ transform:translateY(-500px);
     font-weight:600;
 
 
-
     transition:.3s;
-
-
 
 }
 
@@ -303,9 +274,7 @@ transform:translateY(-500px);
 
 .button:hover{
 
-
     transform:translateY(-5px);
-
 
 
     box-shadow:
@@ -313,8 +282,9 @@ transform:translateY(-500px);
     0 15px 40px
     rgba(41,151,255,.35);
 
-
 }
+
+
 
 
 
@@ -328,16 +298,13 @@ transform:translateY(-500px);
 
 section{
 
-
     padding:140px 8%;
-
 
 }
 
 
 
 .label{
-
 
     color:#2997ff;
 
@@ -383,8 +350,8 @@ p{
 
     line-height:1.7;
 
-
 }
+
 
 
 
@@ -399,9 +366,7 @@ p{
 
 .about{
 
-
     text-align:center;
-
 
 }
 
@@ -433,6 +398,15 @@ p{
 
 
 
+
+
+
+
+/* ==========================================
+   GLASS STYLE
+========================================== */
+
+
 .glass{
 
 
@@ -440,6 +414,7 @@ p{
 
 
     border-radius:35px;
+
 
 
     background:
@@ -464,11 +439,93 @@ p{
 .glass h3{
 
 
-    font-size:30px;
+    font-size:32px;
 
 
     margin-bottom:25px;
 
+
+}
+
+
+
+
+
+
+
+/* ==========================================
+   RHR
+========================================== */
+
+
+.rhr{
+
+    text-align:center;
+
+}
+
+
+
+.rhr-content{
+
+
+    margin-top:70px;
+
+
+    display:flex;
+
+
+    justify-content:center;
+
+}
+
+
+
+.rhr .glass{
+
+
+    max-width:950px;
+
+
+    text-align:left;
+
+}
+
+
+
+.rhr ul{
+
+
+    margin:25px 0;
+
+
+    padding-left:35px;
+
+
+}
+
+
+
+.rhr li{
+
+
+    color:#c7c7cc;
+
+
+    font-size:20px;
+
+
+    line-height:1.8;
+
+
+}
+
+
+
+.rhr strong{
+
+
+    color:white;
 
 }
 
@@ -497,7 +554,6 @@ p{
 
     padding-left:50px;
 
-
 }
 
 
@@ -506,7 +562,6 @@ p{
 
 
     margin-bottom:70px;
-
 
 }
 
@@ -519,7 +574,6 @@ p{
 
 
     letter-spacing:4px;
-
 
 }
 
@@ -543,7 +597,7 @@ p{
 
 
 /* ==========================================
-   CARDS
+   PROJECTS
 ========================================== */
 
 
@@ -563,7 +617,6 @@ p{
 
 
 }
-
 
 
 
@@ -606,15 +659,12 @@ p{
     transform:translateY(-8px);
 
 
-
     box-shadow:
 
     0 20px 50px
     rgba(41,151,255,.2);
 
-
 }
-
 
 
 
@@ -625,7 +675,6 @@ p{
 
 
     height:300px;
-
 
 
     object-fit:cover;
@@ -675,286 +724,4 @@ p{
 
     grid-template-columns:
 
-    repeat(3,1fr);
-
-
-
-    gap:30px;
-
-
-}
-
-
-
-
-.gallery-grid img{
-
-
-    width:100%;
-
-
-    height:400px;
-
-
-    object-fit:contain;
-
-
-
-    background:#000;
-
-
-
-    border-radius:35px;
-
-
-
-    border:
-
-    1px solid rgba(255,255,255,.15);
-
-
-
-    transition:.3s;
-
-
-}
-
-
-
-
-.gallery-grid img:hover{
-
-
-    transform:scale(1.02);
-
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   SOCIAL
-========================================== */
-
-
-.social{
-
-
-    text-align:center;
-
-
-}
-
-
-
-
-.social-buttons{
-
-
-    display:flex;
-
-
-    justify-content:center;
-
-
-    gap:25px;
-
-
-}
-
-
-
-
-.social-buttons a{
-
-
-    padding:18px 45px;
-
-
-    border-radius:50px;
-
-
-
-    background:
-
-    rgba(255,255,255,.08);
-
-
-
-    border:
-
-    1px solid rgba(255,255,255,.15);
-
-
-
-    color:white;
-
-
-
-    text-decoration:none;
-
-
-
-    transition:.3s;
-
-
-}
-
-
-
-.social-buttons a:hover{
-
-
-    background:#2997ff;
-
-
-    transform:translateY(-5px);
-
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   FOOTER
-========================================== */
-
-
-footer{
-
-
-    text-align:center;
-
-
-    padding:150px 20px;
-
-
-    background:#000;
-
-
-}
-
-
-
-
-footer h2{
-
-
-    font-size:
-
-    clamp(100px,20vw,250px);
-
-
-
-    letter-spacing:-15px;
-
-
-}
-
-
-
-
-footer p{
-
-
-    color:#888;
-
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   ANIMATION
-========================================== */
-
-
-@keyframes appear{
-
-
-from{
-
-opacity:0;
-
-transform:translateY(40px);
-
-}
-
-
-to{
-
-opacity:1;
-
-transform:translateY(0);
-
-}
-
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   MOBILE
-========================================== */
-
-
-@media(max-width:900px){
-
-
-.about-grid{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.cards{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.gallery-grid{
-
-grid-template-columns:1fr;
-
-}
-
-
-
-.social-buttons{
-
-flex-direction:column;
-
-}
-
-
-
-section{
-
-padding:90px 25px;
-
-}
-
-
-}
+    repeat(3,1fr
