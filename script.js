@@ -1,16 +1,11 @@
 /* ==========================================
-   F4MYH - Mission Control V4
-   Clean JavaScript
+   F4MYH - Clean Script
 ========================================== */
 
 
-/* ==========================================
-   TYPEWRITER EFFECT
-========================================== */
-
+/* TYPEWRITER */
 
 const typing = document.querySelector(".typing");
-
 
 const messages = [
     "Initializing station...",
@@ -19,213 +14,88 @@ const messages = [
     "System online ✓"
 ];
 
-
-let message = 0;
-let letter = 0;
-
+let msg = 0;
+let char = 0;
 
 
-function writeText(){
-
+function typeWriter(){
 
     if(!typing) return;
 
 
+    if(char < messages[msg].length){
 
-    if(letter < messages[message].length){
+        typing.textContent += messages[msg][char];
 
+        char++;
 
-        typing.textContent += 
-        messages[message][letter];
-
-
-        letter++;
-
-
-        setTimeout(
-            writeText,
-            60
-        );
-
+        setTimeout(typeWriter,60);
 
     } else {
 
-
         setTimeout(()=>{
 
-
             typing.textContent="";
+            char=0;
+            msg++;
 
-
-            letter=0;
-
-
-            message++;
-
-
-
-            if(message >= messages.length){
-
-                message=0;
-
+            if(msg >= messages.length){
+                msg=0;
             }
 
-
-
-            writeText();
-
-
+            typeWriter();
 
         },1200);
 
-
     }
 
-
 }
-
 
 
 typing.textContent="";
-
-writeText();
-
+typeWriter();
 
 
 
 
 
-
-
-/* ==========================================
-   SCROLL ANIMATION
-========================================== */
-
-
-const sections = document.querySelectorAll(
-".about, .timeline, .projects, .gallery, .social"
-);
-
-
-
-sections.forEach(section=>{
-
-
-    section.style.opacity="0";
-
-
-    section.style.transform=
-    "translateY(50px)";
-
-
-    section.style.transition=
-    "opacity .8s ease, transform .8s ease";
-
-
-});
-
-
-
-
-
-const revealObserver = new IntersectionObserver(
-(entries)=>{
-
-
-entries.forEach(entry=>{
-
-
-    if(entry.isIntersecting){
-
-
-        entry.target.style.opacity="1";
-
-
-        entry.target.style.transform=
-        "translateY(0)";
-
-
-    }
-
-
-});
-
-
-},
-{
-    threshold:.15
-}
-);
-
-
-
-
-
-sections.forEach(section=>{
-
-    revealObserver.observe(section);
-
-});
-
-
-
-
-
-
-
-
-/* ==========================================
-   CARD 3D EFFECT
-========================================== */
-
+/* CARD HOVER 3D */
 
 const cards = document.querySelectorAll(".card");
-
 
 
 cards.forEach(card=>{
 
 
-card.addEventListener(
-"mousemove",
-(e)=>{
+card.addEventListener("mousemove",(e)=>{
 
 
-const box =
-card.getBoundingClientRect();
-
+const rect = card.getBoundingClientRect();
 
 
 const x =
-e.clientX - box.left;
+e.clientX - rect.left;
 
 
 const y =
-e.clientY - box.top;
+e.clientY - rect.top;
 
 
 
 const rotateX =
--(y - box.height/2) / 20;
-
+-(y - rect.height / 2) / 25;
 
 
 const rotateY =
-(x - box.width/2) / 20;
+(x - rect.width / 2) / 25;
 
 
 
-
-card.style.transform = `
-
-perspective(900px)
-
+card.style.transform = 
+`
+perspective(800px)
 rotateX(${rotateX}deg)
-
 rotateY(${rotateY}deg)
-
-translateY(-10px)
-
 `;
 
 
@@ -234,118 +104,10 @@ translateY(-10px)
 
 
 
-
-
-
-card.addEventListener(
-"mouseleave",
-()=>{
+card.addEventListener("mouseleave",()=>{
 
 
 card.style.transform="";
-
-
-}
-
-);
-
-
-
-});
-
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   HERO MOUSE MOVEMENT
-========================================== */
-
-
-const hero =
-document.querySelector(".hero-content");
-
-
-
-document.addEventListener(
-"mousemove",
-(e)=>{
-
-
-if(!hero) return;
-
-
-
-const x =
-(e.clientX / window.innerWidth - .5)
-* 10;
-
-
-
-const y =
-(e.clientY / window.innerHeight - .5)
-* 10;
-
-
-
-
-hero.style.transform =
-`
-translate(
-${x}px,
-${y}px
-)
-
-`;
-
-
-
-});
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   BUTTON CLICK EFFECT
-========================================== */
-
-
-const buttons =
-document.querySelectorAll("a");
-
-
-
-buttons.forEach(button=>{
-
-
-button.addEventListener(
-"mousedown",
-()=>{
-
-
-button.style.transform=
-"scale(.95)";
-
-
-});
-
-
-button.addEventListener(
-"mouseup",
-()=>{
-
-
-button.style.transform="";
 
 
 });
