@@ -1,6 +1,6 @@
 /* ==========================================
    F4MYH - Amateur Radio Station
-   Apple / Space / Engineering Design
+   Apple / Space / Mission Control Design
 ========================================== */
 
 
@@ -18,7 +18,6 @@ html{
 }
 
 
-
 body{
 
     font-family:
@@ -29,7 +28,6 @@ body{
     Arial,
     sans-serif;
 
-
     background:#050505;
 
     color:white;
@@ -37,7 +35,6 @@ body{
     overflow-x:hidden;
 
 }
-
 
 
 
@@ -79,8 +76,6 @@ body::before{
     );
 
 }
-
-
 
 
 
@@ -156,18 +151,12 @@ body::before{
 
 .hero h1{
 
-
     font-size:
-
     clamp(100px,22vw,280px);
-
-
 
     letter-spacing:-15px;
 
-
     margin:30px 0;
-
 
 
     background:
@@ -178,9 +167,7 @@ body::before{
     );
 
 
-
     -webkit-background-clip:text;
-
 
     color:transparent;
 
@@ -191,9 +178,7 @@ body::before{
 .hero h2{
 
     font-size:
-
     clamp(40px,7vw,90px);
-
 
     letter-spacing:-5px;
 
@@ -216,7 +201,6 @@ body::before{
 
 
 
-
 /* ==========================================
    BUTTON
 ========================================== */
@@ -224,33 +208,23 @@ body::before{
 
 .button{
 
-
     display:inline-block;
-
 
     margin-top:50px;
 
-
     padding:18px 45px;
-
 
     border-radius:50px;
 
-
     background:#2997ff;
-
 
     color:white !important;
 
-
     text-decoration:none !important;
-
 
     font-weight:600;
 
-
     transition:.3s;
-
 
 }
 
@@ -260,13 +234,11 @@ body::before{
 
     transform:translateY(-5px);
 
-
     box-shadow:
     0 15px 40px
     rgba(41,151,255,.35);
 
 }
-
 
 
 
@@ -302,12 +274,9 @@ section{
 h2{
 
     font-size:
-
     clamp(55px,8vw,110px);
 
-
     letter-spacing:-6px;
-
 
     margin:40px 0;
 
@@ -322,39 +291,6 @@ p{
     font-size:21px;
 
     line-height:1.7;
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   ABOUT
-========================================== */
-
-
-.about{
-
-    text-align:center;
-
-}
-
-
-
-.about-grid{
-
-    margin-top:70px;
-
-    display:grid;
-
-    grid-template-columns:1fr 350px;
-
-    gap:60px;
-
-    text-align:left;
 
 }
 
@@ -397,6 +333,39 @@ p{
     font-size:32px;
 
     margin-bottom:25px;
+
+}
+
+
+
+
+
+
+
+/* ==========================================
+   ABOUT
+========================================== */
+
+
+.about{
+
+    text-align:center;
+
+}
+
+
+
+.about-grid{
+
+    margin-top:70px;
+
+    display:grid;
+
+    grid-template-columns:1fr 350px;
+
+    gap:60px;
+
+    text-align:left;
 
 }
 
@@ -525,136 +494,11 @@ p{
 
 
 /* ==========================================
-   PROJECTS
+   QSO MAP
 ========================================== */
 
 
-.cards{
-
-    display:grid;
-
-    grid-template-columns:
-    repeat(3,1fr);
-
-    gap:35px;
-
-}
-
-
-
-.card{
-
-    overflow:hidden;
-
-    border-radius:35px;
-
-
-    background:
-
-    rgba(255,255,255,.08);
-
-
-    border:
-
-    1px solid rgba(255,255,255,.15);
-
-
-}
-
-
-
-.card img{
-
-    width:100%;
-
-    height:300px;
-
-    object-fit:cover;
-
-    display:block;
-
-}
-
-
-
-.card div{
-
-    padding:35px;
-
-}
-
-
-
-.card h3{
-
-    font-size:32px;
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   GALLERY
-========================================== */
-
-
-.gallery-grid{
-
-    display:grid;
-
-    grid-template-columns:
-
-    repeat(3,1fr);
-
-    gap:30px;
-
-}
-
-
-
-.gallery-grid img{
-
-
-    width:100%;
-
-    height:350px;
-
-
-    object-fit:contain;
-
-
-    background:#000;
-
-
-    border-radius:35px;
-
-
-    border:
-
-    1px solid rgba(255,255,255,.15);
-
-
-    display:block;
-
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   SOCIAL
-========================================== */
-
-
-.social{
+.qso-map{
 
     text-align:center;
 
@@ -662,22 +506,26 @@ p{
 
 
 
-.social-buttons{
+.station-selector{
 
     display:flex;
 
     justify-content:center;
 
-    gap:25px;
+    gap:20px;
+
+    margin:50px 0;
+
+    flex-wrap:wrap;
 
 }
 
 
 
-.social-buttons a{
+.station-btn{
 
 
-    padding:18px 45px;
+    padding:16px 35px;
 
 
     border-radius:50px;
@@ -694,74 +542,35 @@ p{
 
 
 
-    color:white !important;
+    color:white;
 
 
-    text-decoration:none !important;
-
-
-    font-size:18px;
+    font-size:17px;
 
 
     font-weight:600;
 
 
-    display:inline-block;
+    cursor:pointer;
+
+
+    transition:.3s;
 
 
 }
 
 
 
-.social-buttons a:hover{
+.station-btn:hover,
+.station-btn.active{
 
 
     background:#2997ff;
 
 
-}
-
-
-
-
-
-
-
-/* ==========================================
-   FOOTER
-========================================== */
-
-
-footer{
-
-    text-align:center;
-
-    padding:150px 20px;
-
-    background:#000;
-
-}
-
-
-
-footer h2{
-
-
-    font-size:
-
-    clamp(100px,20vw,250px);
-
-
-    letter-spacing:-15px;
-
-
-}
-
-
-
-footer p{
-
-    color:#888;
+    box-shadow:
+    0 10px 30px
+    rgba(41,151,255,.35);
 
 }
 
@@ -769,85 +578,55 @@ footer p{
 
 
 
+#map{
 
 
-/* ==========================================
-   ANIMATION
-========================================== */
+    height:650px;
 
 
-@keyframes appear{
+    width:100%;
 
-from{
 
-opacity:0;
+    margin-top:40px;
 
-transform:translateY(40px);
+
+    border-radius:35px;
+
+
+    overflow:hidden;
+
+
+    border:
+
+    1px solid rgba(255,255,255,.15);
+
 
 }
 
 
-to{
-
-opacity:1;
-
-transform:translateY(0);
-
-}
-
-}
 
 
+/* Leaflet dark adaptation */
 
 
+.leaflet-container{
 
 
-
-/* ==========================================
-   MOBILE
-========================================== */
-
-
-@media(max-width:900px){
-
-
-.about-grid{
-
-    grid-template-columns:1fr;
+    background:#020409;
 
 }
 
 
 
-.cards{
-
-    grid-template-columns:1fr;
-
-}
 
 
-
-.gallery-grid{
-
-    grid-template-columns:1fr;
-
-}
+.qso-stats{
 
 
-
-.social-buttons{
-
-    flex-direction:column;
-
-}
+    display:flex;
 
 
-
-section{
-
-    padding:90px 25px;
-
-}
+    justify-content:center;
 
 
-}
+    gap:30
