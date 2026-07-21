@@ -1,46 +1,61 @@
 /* ==========================================
-   F4MYH - Mission Control V8
+   F4MYH - Mission Control V9
+   QRZ + Leaflet + Local Callsign Database
 ========================================== */
 
 
-/*
-    LOCAL QRZ CONFIG
-
-    TEST LOCAL UNIQUEMENT
-
-    NE PAS DEPLOYER SUR GITHUB
-
-*/
-
+/* ==========================================
+   QRZ CONFIG
+========================================== */
 
 const QRZ_CONFIG = {
 
     stations: {
 
-
         "F4MYH": {
 
             callsign:"F4MYH",
 
-            apiKey:"7A95-D46F-BA03-DF11"
+            apiKey:"7A95-D46F-BA03-DF11",
+
+            lat:48.8566,
+
+            lon:2.3522
 
         },
-
 
 
         "9A/F4MYH": {
 
             callsign:"9A/F4MYH",
 
-            apiKey:"6998-8E54-7255-6607"
+            apiKey:"6998-8E54-7255-6607",
+
+            lat:43.5081,
+
+            lon:16.4402
 
         }
 
-
     }
 
-
 };
+
+
+
+
+
+/* ==========================================
+   GLOBAL VARIABLES
+========================================== */
+
+let map;
+
+let layers=[];
+
+let qsoData=[];
+
+let callsignDB={};
 
 
 
@@ -58,14 +73,17 @@ const typing=document.querySelector(".typing");
 
 const messages=[
 
-"Initializing station...",
-"Loading antennas...",
-"Connecting satellites...",
-"Scanning HF bands...",
-"System online ✓"
+    "Initializing station...",
+
+    "Loading antennas...",
+
+    "Connecting satellites...",
+
+    "Scanning HF bands...",
+
+    "System online ✓"
 
 ];
-
 
 
 let messageIndex=0;
@@ -74,10 +92,12 @@ let charIndex=0;
 
 
 
+
 function typeWriter(){
 
 
-    if(!typing) return;
+    if(!typing)
+        return;
 
 
 
@@ -99,7 +119,6 @@ function typeWriter(){
 
     }
 
-
     else{
 
 
@@ -116,11 +135,9 @@ function typeWriter(){
 
 
 
-            if(messageIndex>=messages.length){
+            if(messageIndex>=messages.length)
 
                 messageIndex=0;
-
-            }
 
 
 
@@ -155,30 +172,66 @@ if(typing){
 
 
 /* ==========================================
-   MAP SYSTEM
+   LOAD CALLSIGN DATABASE
 ========================================== */
 
 
-let map;
+async function loadCallsignDatabase(){
 
 
-let layers=[];
+    try{
 
 
-let qsoData=[];
-
-
-
+        const response =
+        await fetch("callsigns.json");
 
 
 
+        callsignDB =
+        await response.json();
+
+
+
+        console.log(
+            "Callsign database loaded",
+            callsignDB
+        );
+
+
+    }
+
+
+    catch(error){
+
+
+        console.error(
+            "Callsign database error",
+            error
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   MAP INIT
+========================================== */
 
 
 function initMap(){
 
 
-    map=L.map("map")
-
+    map = L.map("map")
     .setView(
 
         [45,10],
@@ -190,22 +243,18 @@ function initMap(){
 
 
 
-
     L.tileLayer(
 
-    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
 
-    {
+        {
 
-        attribution:
+            attribution:
+            "© OpenStreetMap © CARTO"
 
-        "© OpenStreetMap © CARTO"
-
-    }
-
+        }
 
     ).addTo(map);
-
 
 
 
@@ -222,6 +271,12 @@ function initMap(){
 
 
 
+
+
+
+/* ==========================================
+   CLEAR MAP
+========================================== */
 
 
 function clearLayers(){
@@ -247,238 +302,83 @@ function clearLayers(){
 
 
 
-function displayQSOs(station){
 
-
-
-    clearLayers();
-
-
-
-    let qsos;
-
-
-
-    if(station==="ALL"){
-
-
-        qsos=qsoData;
-
-
-    }
-
-
-    else{
-
-
-        qsos=qsoData.filter(
-
-            q=>q.station===station
-
-        );
-
-
-    }
-
-
-
-
-
-
-
-    qsos.forEach(qso=>{
-
-
-        let marker =
-
-        L.marker(
-
-
-        [
-
-            qso.lat,
-
-            qso.lon
-
-        ]
-
-        )
-
-
-        .addTo(map);
-
-
-
-
-
-        marker.bindPopup(`
-
-        <h3>
-
-        ${qso.call}
-
-        </h3>
-
-
-        Country :
-
-        ${qso.country}
-
-
-        <br>
-
-
-        Band :
-
-        ${qso.band}
-
-
-        <br>
-
-
-        Mode :
-
-        ${qso.mode}
-
-
-        <br>
-
-
-        Date :
-
-        ${qso.date}
-
-
-        `);
-
-
-
-
-
-
-        layers.push(marker);
-
-
-
-    });
-
-
-
-
-    updateStats(qsos);
-
-
-
-}
 /* ==========================================
-   UPDATE STATS
+   DISTANCE CALCULATOR
 ========================================== */
 
 
-function updateStats(qsos){
+function calculateDistance(
+
+lat1,
+
+lon1,
+
+lat2,
+
+lon2
+
+){
 
 
-    let qsoNumber =
-    document.getElementById(
-        "qso-number"
+    const R = 6371;
+
+
+    const dLat =
+    (lat2-lat1)
+    *
+    Math.PI/180;
+
+
+    const dLon =
+    (lon2-lon1)
+    *
+    Math.PI/180;
+
+
+
+    const a =
+
+    Math.sin(dLat/2) *
+    Math.sin(dLat/2)
+
+    +
+
+    Math.cos(lat1*Math.PI/180)
+
+    *
+
+    Math.cos(lat2*Math.PI/180)
+
+    *
+
+    Math.sin(dLon/2)
+
+    *
+
+    Math.sin(dLon/2);
+
+
+
+    return Math.round(
+
+        R *
+        2 *
+        Math.atan2(
+            Math.sqrt(a),
+            Math.sqrt(1-a)
+        )
+
     );
-
-
-
-    let countryNumber =
-    document.getElementById(
-        "country-number"
-    );
-
-
-
-    let dxNumber =
-    document.getElementById(
-        "dx-number"
-    );
-
-
-
-
-    if(qsoNumber){
-
-        qsoNumber.textContent =
-        qsos.length;
-
-    }
-
-
-
-
-
-    if(countryNumber){
-
-
-        let countries =
-        new Set(
-
-            qsos.map(
-                q=>q.country
-            )
-
-        );
-
-
-        countryNumber.textContent =
-        countries.size;
-
-
-    }
-
-
-
-
-
-    if(dxNumber){
-
-
-        let max=0;
-
-
-        qsos.forEach(q=>{
-
-
-            if(q.distance > max){
-
-                max=q.distance;
-
-            }
-
-
-        });
-
-
-
-        dxNumber.textContent =
-        max+" km";
-
-
-    }
-
 
 
 }
-
-
-
-
-
-
-
-
-
 /* ==========================================
-   QRZ API LOCAL
+   QRZ API FETCH
 ========================================== */
 
 
 async function loadQRZQSOs(station){
-
 
 
     const config =
@@ -499,11 +399,25 @@ async function loadQRZQSOs(station){
 
 
 
+    const formData = new URLSearchParams();
 
-    const url =
 
-    `https://logbook.qrz.com/api?KEY=${config.apiKey}&ACTION=FETCH`;
+    formData.append(
+        "KEY",
+        config.apiKey
+    );
 
+
+    formData.append(
+        "ACTION",
+        "FETCH"
+    );
+
+
+    formData.append(
+        "OPTION",
+        "ALL,MAX:250"
+    );
 
 
 
@@ -512,15 +426,31 @@ async function loadQRZQSOs(station){
 
 
         const response =
+        await fetch(
 
-        await fetch(url);
+            "https://logbook.qrz.com/api",
+
+            {
+
+                method:"POST",
+
+                headers:{
+
+                    "Content-Type":
+                    "application/x-www-form-urlencoded"
+
+                },
+
+                body:formData
+
+            }
+
+        );
 
 
 
         const text =
-
         await response.text();
-
 
 
 
@@ -533,149 +463,101 @@ async function loadQRZQSOs(station){
 
 
 
-
-        const parser =
-
-        new DOMParser();
-
-
-
-
-
-        const xml =
-
-        parser.parseFromString(
+        parseADIF(
 
             text,
 
-            "text/xml"
+            station
 
         );
 
 
 
+    }
 
 
-        const entries =
+    catch(error){
 
-        xml.getElementsByTagName(
-            "CALL"
+
+        console.error(
+            "QRZ API ERROR",
+            error
         );
 
 
+    }
 
 
+}
 
-        qsoData=[];
 
 
 
 
 
-        for(let i=0;i<entries.length;i++){
 
 
 
-            let record =
+/* ==========================================
+   ADIF PARSER
+========================================== */
 
-            entries[i].parentNode;
 
+function parseADIF(
 
+data,
 
+station
 
+){
 
-            qsoData.push({
 
 
+    qsoData=[];
 
-                station:station,
 
 
+    const records =
+    data.split("<eor>");
 
-                call:
 
-                record
-                .getElementsByTagName("CALL")[0]
-                ?.textContent || "",
 
 
+    records.forEach(record=>{
 
 
-                country:
 
-                record
-                .getElementsByTagName("COUNTRY")[0]
-                ?.textContent || "Unknown",
+        if(!record.includes("<call"))
 
+            return;
 
 
 
-                band:
 
-                record
-                .getElementsByTagName("BAND")[0]
-                ?.textContent || "",
+        function getADIF(field){
 
 
+            const regex =
 
+            new RegExp(
 
-                mode:
+                "<"+field+
+                ":[0-9]+>([^<]*)",
 
-                record
-                .getElementsByTagName("MODE")[0]
-                ?.textContent || "",
+                "i"
 
+            );
 
 
+            const result =
+            record.match(regex);
 
-                date:
 
-                record
-                .getElementsByTagName("QSO_DATE")[0]
-                ?.textContent || "",
 
-
-
-
-                lat:
-
-                parseFloat(
-
-                record
-                .getElementsByTagName("LAT")[0]
-                ?.textContent
-
-                ) || 0,
-
-
-
-
-                lon:
-
-                parseFloat(
-
-                record
-                .getElementsByTagName("LON")[0]
-                ?.textContent
-
-                ) || 0,
-
-
-
-
-                distance:0,
-
-
-
-
-                stationLat:45,
-
-                stationLon:3
-
-
-
-            });
-
+            return result ?
+            result[1].trim()
+            :
+            "";
 
 
         }
@@ -684,11 +566,41 @@ async function loadQRZQSOs(station){
 
 
 
-        console.log(
 
-            "QSOs chargés :",
+        const call =
+        getADIF("call");
 
-            qsoData.length
+
+
+
+        const coords =
+        callsignDB[call];
+
+
+
+
+
+        if(!coords)
+
+            return;
+
+
+
+
+
+
+
+        const distance =
+
+        calculateDistance(
+
+            configStation(station).lat,
+
+            configStation(station).lon,
+
+            coords.lat,
+
+            coords.lon
 
         );
 
@@ -696,27 +608,228 @@ async function loadQRZQSOs(station){
 
 
 
-        displayQSOs(station);
+
+        qsoData.push({
+
+
+            station:station,
+
+
+            call:call,
+
+
+            country:
+            coords.country,
+
+
+            lat:
+            coords.lat,
+
+
+            lon:
+            coords.lon,
+
+
+            band:
+            getADIF("band"),
+
+
+            mode:
+            getADIF("mode"),
+
+
+            date:
+            getADIF("qso_date"),
 
 
 
-    }
+            distance:distance,
+
+
+            stationLat:
+            configStation(station).lat,
+
+
+            stationLon:
+            configStation(station).lon
 
 
 
-    catch(error){
+        });
 
 
-        console.error(
 
-            "QRZ API ERROR",
+    });
 
-            error
+
+
+
+
+    console.log(
+
+        "QSOs affichables:",
+
+        qsoData.length
+
+    );
+
+
+
+    displayQSOs();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+function configStation(name){
+
+
+    return QRZ_CONFIG.stations[name];
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   DISPLAY QSO
+========================================== */
+
+
+function displayQSOs(){
+
+
+
+    clearLayers();
+
+
+
+
+    qsoData.forEach(qso=>{
+
+
+
+        const marker =
+
+        L.marker([
+
+            qso.lat,
+
+            qso.lon
+
+        ])
+
+        .addTo(map);
+
+
+
+
+
+
+        marker.bindPopup(`
+
+        <h3>${qso.call}</h3>
+
+        Country :
+        ${qso.country}
+
+        <br>
+
+        Band :
+        ${qso.band}
+
+        <br>
+
+        Mode :
+        ${qso.mode}
+
+        <br>
+
+        Date :
+        ${qso.date}
+
+        <br>
+
+        Distance :
+        ${qso.distance} km
+
+        `);
+
+
+
+
+
+
+        const line =
+
+        L.polyline(
+
+        [
+
+            [
+
+                qso.stationLat,
+
+                qso.stationLon
+
+            ],
+
+            [
+
+                qso.lat,
+
+                qso.lon
+
+            ]
+
+        ],
+
+        {
+
+            color:"#2997ff",
+
+            weight:2
+
+        }
+
+        )
+
+        .addTo(map);
+
+
+
+
+
+        layers.push(
+
+            marker,
+
+            line
 
         );
 
 
-    }
+
+    });
+
+
+
+
+    updateStats();
 
 
 
@@ -731,14 +844,132 @@ async function loadQRZQSOs(station){
 
 
 /* ==========================================
-   START SYSTEM
+   STATS
 ========================================== */
 
 
-if(document.getElementById("map")){
+function updateStats(){
+
+
+
+    const qsoNumber =
+    document.getElementById(
+        "qso-number"
+    );
+
+
+
+    const countryNumber =
+    document.getElementById(
+        "country-number"
+    );
+
+
+
+    const dxNumber =
+    document.getElementById(
+        "dx-number"
+    );
+
+
+
+
+
+    if(qsoNumber)
+
+        qsoNumber.textContent =
+        qsoData.length;
+
+
+
+
+
+
+    if(countryNumber){
+
+
+        const countries =
+
+        new Set(
+
+            qsoData.map(
+
+                q=>q.country
+
+            )
+
+        );
+
+
+
+        countryNumber.textContent =
+        countries.size;
+
+
+    }
+
+
+
+
+
+
+    if(dxNumber){
+
+
+        let max=0;
+
+
+
+        qsoData.forEach(q=>{
+
+
+            if(q.distance>max)
+
+                max=q.distance;
+
+
+        });
+
+
+
+
+        dxNumber.textContent =
+        max+" km";
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   START
+========================================== */
+
+
+async function startSystem(){
+
+
+    if(!document.getElementById("map"))
+
+        return;
+
+
+
+    await loadCallsignDatabase();
+
 
 
     initMap();
+
 
 
     loadQRZQSOs(
@@ -752,73 +983,54 @@ if(document.getElementById("map")){
 
 
 
+startSystem();
+
+
+
+
+
 
 
 
 
 /* ==========================================
-   BUTTONS
+   STATION BUTTONS
 ========================================== */
 
 
 document
-
 .querySelectorAll(".station-btn")
-
 .forEach(button=>{
-
 
 
     button.addEventListener(
 
-    "click",
+        "click",
 
-    ()=>{
-
-
+        ()=>{
 
 
-
-        document
-
-        .querySelectorAll(".station-btn")
-
-        .forEach(btn=>{
+            document
+            .querySelectorAll(".station-btn")
+            .forEach(btn=>{
 
 
-            btn.classList.remove(
+                btn.classList.remove(
+                    "active"
+                );
+
+
+            });
+
+
+
+
+
+            button.classList.add(
                 "active"
             );
 
 
-        });
-
-
-
-
-
-
-        button.classList.add(
-            "active"
-        );
-
-
-
-
-
-
-        if(button.dataset.station==="ALL"){
-
-
-            loadQRZQSOs(
-                "F4MYH"
-            );
-
-
-        }
-
-
-        else{
 
 
             loadQRZQSOs(
@@ -828,16 +1040,14 @@ document
             );
 
 
+
         }
 
-
-
-
-    });
-
+    );
 
 
 });
+
 
 
 
@@ -851,9 +1061,7 @@ document
 
 
 document
-
 .querySelectorAll("img")
-
 .forEach(img=>{
 
 
@@ -870,44 +1078,40 @@ document
 
 
 /* ==========================================
-   BUTTON PRESS EFFECT
+   BUTTON PRESS
 ========================================== */
 
 
 document
-
 .querySelectorAll("a")
-
 .forEach(button=>{
 
 
+    button.addEventListener(
+
+        "mousedown",
+
+        ()=>{
+
+            button.style.scale=".96";
+
+        }
+
+    );
+
+
 
     button.addEventListener(
 
-    "mousedown",
+        "mouseup",
 
-    ()=>{
+        ()=>{
 
+            button.style.scale="1";
 
-        button.style.scale=".96";
+        }
 
-
-    });
-
-
-
-    button.addEventListener(
-
-    "mouseup",
-
-    ()=>{
-
-
-        button.style.scale="1";
-
-
-    });
-
+    );
 
 
 });
