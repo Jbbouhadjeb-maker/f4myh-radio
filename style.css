@@ -1,8 +1,10 @@
 /* ==========================================
    F4MYH - Mission Control V4
-   Apple / SpaceX / Engineering Design
+   Apple / Space / Engineering
 ========================================== */
 
+
+/* RESET */
 
 *{
     margin:0;
@@ -26,13 +28,14 @@ body{
     Arial,
     sans-serif;
 
-    background:#020409;
+    background:#050505;
 
     color:white;
 
     overflow-x:hidden;
 
 }
+
 
 
 
@@ -49,21 +52,26 @@ body::before{
 
     inset:0;
 
+    z-index:-2;
+
     background:
 
     radial-gradient(
-        circle at 50% 10%,
-        rgba(41,151,255,.25),
+        circle at 50% 5%,
+        rgba(41,151,255,.45),
         transparent 35%
     ),
 
     radial-gradient(
-        circle at 80% 80%,
-        rgba(0,122,255,.15),
-        transparent 30%
-    );
+        circle at 80% 70%,
+        rgba(0,122,255,.20),
+        transparent 35%
+    ),
 
-    z-index:-2;
+    linear-gradient(
+        #050505,
+        #020409
+    );
 
 }
 
@@ -75,6 +83,9 @@ body::before{
 
     inset:0;
 
+    z-index:-1;
+
+
     background-image:
 
     radial-gradient(
@@ -82,19 +93,20 @@ body::before{
         transparent 1px
     );
 
-    background-size:80px 80px;
 
-    opacity:.15;
+    background-size:90px 90px;
 
-    animation:stars 80s linear infinite;
+    opacity:.12;
 
-    z-index:-1;
+
+    animation:
+    starsMove 100s linear infinite;
 
 }
 
 
 
-@keyframes stars{
+@keyframes starsMove{
 
 from{
 
@@ -104,12 +116,11 @@ transform:translateY(0);
 
 to{
 
-transform:translateY(-500px);
+transform:translateY(-600px);
 
 }
 
 }
-
 
 
 
@@ -132,18 +143,17 @@ transform:translateY(-500px);
 
     text-align:center;
 
-    position:relative;
-
-
 }
 
 
 
 .hero-content{
 
-    animation:appear 1.5s ease;
+    animation:
+    appear 1.5s ease;
 
 }
+
 
 
 
@@ -159,18 +169,22 @@ transform:translateY(-500px);
 
 
 
+
 .hero h1{
 
 
     font-size:
 
-    clamp(110px,22vw,280px);
+    clamp(100px,22vw,280px);
+
 
 
     letter-spacing:-15px;
 
 
+
     margin:30px 0;
+
 
 
     background:
@@ -183,10 +197,11 @@ transform:translateY(-500px);
 
     -webkit-background-clip:text;
 
+
     color:transparent;
 
-
 }
+
 
 
 
@@ -200,6 +215,7 @@ transform:translateY(-500px);
 
     letter-spacing:-5px;
 
+
 }
 
 
@@ -208,7 +224,7 @@ transform:translateY(-500px);
 
     margin-top:35px;
 
-    color:#aaa;
+    color:#c7c7cc;
 
     font-size:22px;
 
@@ -216,39 +232,52 @@ transform:translateY(-500px);
 
 
 
+
+
 .button{
 
     display:inline-block;
 
+
     margin-top:50px;
+
 
     padding:18px 45px;
 
+
     border-radius:50px;
+
 
     background:#2997ff;
 
+
     color:white;
+
 
     text-decoration:none;
 
+
     font-weight:600;
 
-    transition:.4s;
+
+    transition:.3s;
+
 
 }
+
 
 
 .button:hover{
 
     transform:translateY(-8px);
 
+
     box-shadow:
 
-    0 20px 50px rgba(41,151,255,.4);
+    0 20px 50px
+    rgba(41,151,255,.45);
 
 }
-
 
 
 
@@ -286,7 +315,9 @@ h2{
 
     clamp(55px,8vw,110px);
 
+
     letter-spacing:-6px;
+
 
     margin:40px 0;
 
@@ -296,13 +327,14 @@ h2{
 
 p{
 
-    color:#b5b5ba;
+    color:#c7c7cc;
 
     font-size:21px;
 
     line-height:1.7;
 
 }
+
 
 
 
@@ -328,9 +360,13 @@ p{
 
     display:grid;
 
-    grid-template-columns:1fr 350px;
+    grid-template-columns:
+
+    1fr 350px;
+
 
     gap:60px;
+
 
     text-align:left;
 
@@ -338,8 +374,9 @@ p{
 
 
 
-.glass{
 
+
+.glass{
 
     padding:40px;
 
@@ -358,7 +395,6 @@ p{
 
     backdrop-filter:blur(25px);
 
-
 }
 
 
@@ -367,9 +403,10 @@ p{
 
     font-size:30px;
 
-    margin-bottom:30px;
+    margin-bottom:25px;
 
 }
+
 
 
 
@@ -388,6 +425,7 @@ p{
     border-left:
 
     2px solid #2997ff;
+
 
     padding-left:50px;
 
@@ -427,6 +465,7 @@ p{
 
 
 
+
 /* ==========================================
    PROJECT CARDS
 ========================================== */
@@ -434,8 +473,8 @@ p{
 
 .cards{
 
-
     display:grid;
+
 
     grid-template-columns:
 
@@ -444,13 +483,11 @@ p{
 
     gap:35px;
 
-
 }
 
 
 
 .card{
-
 
     overflow:hidden;
 
@@ -471,8 +508,7 @@ p{
     backdrop-filter:blur(20px);
 
 
-    transition:.5s;
-
+    transition:.4s;
 
 }
 
@@ -480,14 +516,16 @@ p{
 
 .card:hover{
 
-    transform:translateY(-15px);
+    box-shadow:
+
+    0 25px 60px
+    rgba(41,151,255,.25);
 
 }
 
 
 
 .card img{
-
 
     width:100%;
 
@@ -496,7 +534,6 @@ p{
 
 
     object-fit:cover;
-
 
 }
 
@@ -524,13 +561,13 @@ p{
 
 
 
+
 /* ==========================================
    GALLERY
 ========================================== */
 
 
 .gallery-grid{
-
 
     display:grid;
 
@@ -541,7 +578,6 @@ p{
 
 
     gap:30px;
-
 
 }
 
@@ -556,7 +592,7 @@ p{
     height:400px;
 
 
-    object-fit:contain;
+    object-fit:cover;
 
 
     background:#000;
@@ -570,8 +606,7 @@ p{
     1px solid rgba(255,255,255,.15);
 
 
-    transition:.5s;
-
+    transition:.4s;
 
 }
 
@@ -579,9 +614,10 @@ p{
 
 .gallery-grid img:hover{
 
-    transform:scale(1.03);
+    transform:scale(1.04);
 
 }
+
 
 
 
@@ -615,8 +651,7 @@ p{
 
 .social-buttons a{
 
-
-    padding:18px 40px;
+    padding:18px 45px;
 
 
     border-radius:50px;
@@ -649,6 +684,9 @@ p{
 
     background:#2997ff;
 
+
+    transform:translateY(-5px);
+
 }
 
 
@@ -665,7 +703,9 @@ footer{
 
     text-align:center;
 
+
     padding:150px 20px;
+
 
     background:#000;
 
@@ -677,11 +717,22 @@ footer h2{
 
     font-size:
 
-    clamp(120px,20vw,250px);
+    clamp(100px,20vw,250px);
+
 
     letter-spacing:-15px;
 
 }
+
+
+
+footer p{
+
+    color:#888;
+
+}
+
+
 
 
 
@@ -694,11 +745,12 @@ footer h2{
 
 @keyframes appear{
 
+
 from{
 
 opacity:0;
 
-transform:translateY(50px);
+transform:translateY(40px);
 
 }
 
@@ -711,7 +763,10 @@ transform:translateY(0);
 
 }
 
+
 }
+
+
 
 
 
@@ -755,6 +810,21 @@ flex-direction:column;
 
 }
 
+
+
+section{
+
+padding:90px 25px;
+
+}
+
+
+
+.hero h1{
+
+letter-spacing:-8px;
+
+}
 
 
 }
