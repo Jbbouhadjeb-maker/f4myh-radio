@@ -1,11 +1,11 @@
 /* ==========================================
    F4MYH - Mission Control V11
-   9A/F4MYH ADIF + Leaflet
+   ADIF + Leaflet + Maidenhead Locator
 ========================================== */
 
 
 /* ==========================================
-   STATION CONFIG
+   CONFIG STATION
 ========================================== */
 
 const STATION_CONFIG = {
@@ -26,6 +26,8 @@ const STATION_CONFIG = {
 
 
 
+
+
 /* ==========================================
    GLOBAL VARIABLES
 ========================================== */
@@ -37,6 +39,10 @@ let layers=[];
 let qsoData=[];
 
 let callsignDB={};
+
+
+
+
 
 
 
@@ -53,9 +59,9 @@ const messages=[
 
     "Loading antennas...",
 
-    "Scanning HF bands...",
+    "Connecting satellites...",
 
-    "Loading logbook...",
+    "Scanning HF bands...",
 
     "System online ✓"
 
@@ -76,6 +82,7 @@ function typeWriter(){
         return;
 
 
+
     if(charIndex < messages[messageIndex].length){
 
 
@@ -87,8 +94,11 @@ function typeWriter(){
 
 
         setTimeout(
+
             typeWriter,
+
             55
+
         );
 
 
@@ -102,7 +112,9 @@ function typeWriter(){
 
             typing.textContent="";
 
+
             charIndex=0;
+
 
             messageIndex++;
 
@@ -120,6 +132,7 @@ function typeWriter(){
 
     }
 
+
 }
 
 
@@ -131,6 +144,10 @@ if(typing){
     typeWriter();
 
 }
+
+
+
+
 
 
 
@@ -154,20 +171,28 @@ async function loadCallsignDatabase(){
         await response.json();
 
 
+
         console.log(
+
             "Callsign database loaded",
+
             callsignDB
+
         );
 
 
     }
 
+
     catch(error){
 
 
         console.error(
+
             "Callsign database error",
+
             error
+
         );
 
 
@@ -181,15 +206,119 @@ async function loadCallsignDatabase(){
 
 
 
+
+
+
+/* ==========================================
+   MAIDENHEAD GRID CONVERTER
+========================================== */
+
+
+function gridToLatLon(grid){
+
+
+    if(!grid || grid.length < 4)
+
+        return null;
+
+
+
+    grid = grid.toUpperCase();
+
+
+
+    let lon =
+    (grid.charCodeAt(0)-65)
+    *
+    20
+    -
+    180;
+
+
+
+    let lat =
+    (grid.charCodeAt(1)-65)
+    *
+    10
+    -
+    90;
+
+
+
+    lon +=
+    parseInt(grid[2])
+    *
+    2;
+
+
+
+    lat +=
+    parseInt(grid[3]);
+
+
+
+
+    if(grid.length >= 6){
+
+
+        lon +=
+
+        (grid.charCodeAt(4)-65)
+
+        *
+
+        (5/60);
+
+
+
+        lat +=
+
+        (grid.charCodeAt(5)-65)
+
+        *
+
+        (2.5/60);
+
+
+
+    }
+
+
+
+    return {
+
+
+        country:"Unknown",
+
+
+        lat:lat+0.5,
+
+
+        lon:lon+1
+
+
+    };
+
+
+}
+
+
+
+
+
+
+
+
+
 /* ==========================================
    MAP INIT
 ========================================== */
 
+
 function initMap(){
 
 
-    map =
-    L.map("map")
+    map = L.map("map")
     .setView(
 
         [45,10],
@@ -217,7 +346,9 @@ function initMap(){
 
     setTimeout(()=>{
 
+
         map.invalidateSize();
+
 
     },500);
 
@@ -228,9 +359,14 @@ function initMap(){
 
 
 
+
+
+
+
 /* ==========================================
    CLEAR MAP
 ========================================== */
+
 
 function clearLayers(){
 
@@ -254,9 +390,13 @@ function clearLayers(){
 
 
 
+
+
+
 /* ==========================================
-   DISTANCE
+   DISTANCE CALCULATOR
 ========================================== */
+
 
 function calculateDistance(
 
@@ -289,7 +429,10 @@ lon2
 
     const a =
 
-    Math.sin(dLat/2) *
+    Math.sin(dLat/2)
+
+    *
+
     Math.sin(dLat/2)
 
     +
@@ -328,14 +471,225 @@ lon2
 
 
 }
+/* ==========================================
+   ADIF PARSER
+========================================== */
+
+
+async function parseADIF(data, station){
+
+
+    qsoData=[];
+
+
+    const records =
+    data.split("<eor>");
+
+
+
+    for(const record of records){
+
+
+        if(!record.toLowerCase().includes("<call"))
+
+            continue;
+
+
+
+        function getADIF(field){
+
+
+            const regex =
+
+            new RegExp(
+
+                "<"+field+
+                ":[0-9]+>([^<]*)",
+
+                "i"
+
+            );
+
+
+            const result =
+            record.match(regex);
+
+
+
+            return result ?
+
+            result[1].trim()
+
+            :
+
+            "";
+
+
+        }
+
+
+
+
+        const call =
+        getADIF("call");
+
+
+
+        let coords =
+        callsignDB[call];
+
+
+
+        /*
+            Si l'indicatif n'est pas dans
+            callsigns.json on utilise le GRID
+        */
+
+
+        if(!coords){
+
+
+            const grid =
+            getADIF("gridsquare");
+
+
+
+            coords =
+            gridToLatLon(grid);
+
+
+
+        }
+
+
+
+        if(!coords){
+
+
+            console.log(
+
+                "Coordonnées manquantes:",
+
+                call
+
+            );
+
+
+            continue;
+
+        }
+
+
+
+
+
+        const stationInfo =
+        STATION_CONFIG[station];
+
+
+
+        const distance =
+
+        calculateDistance(
+
+            stationInfo.lat,
+
+            stationInfo.lon,
+
+            coords.lat,
+
+            coords.lon
+
+        );
+
+
+
+
+
+        qsoData.push({
+
+
+            station:station,
+
+
+            call:call,
+
+
+            country:
+            coords.country,
+
+
+            lat:
+            coords.lat,
+
+
+            lon:
+            coords.lon,
+
+
+            band:
+            getADIF("band"),
+
+
+            mode:
+            getADIF("mode"),
+
+
+            date:
+            getADIF("qso_date"),
+
+
+            distance:distance,
+
+
+            stationLat:
+            stationInfo.lat,
+
+
+            stationLon:
+            stationInfo.lon
+
+
+
+        });
+
+
+    }
+
+
+
+    console.log(
+
+        "QSOs affichables:",
+
+        qsoData.length
+
+    );
+
+
+
+    console.log(qsoData);
+
+
+
+    displayQSOs();
+
+
+
+}
+
+
+
+
 
 
 
 
 
 /* ==========================================
-   ADIF LOAD
+   LOAD ADIF
 ========================================== */
+
 
 async function loadADIF(){
 
@@ -345,11 +699,7 @@ async function loadADIF(){
 
         const response =
 
-        await fetch(
-
-        "https://raw.githubusercontent.com/Jbbouhadjeb-maker/f4myh-radio/main/logbook.adi"
-
-        );
+        await fetch("./logbook.adi");
 
 
 
@@ -369,7 +719,7 @@ async function loadADIF(){
 
 
 
-        parseADIF(
+        await parseADIF(
 
             text,
 
@@ -402,159 +752,14 @@ async function loadADIF(){
 
 
 
-/* ==========================================
-   ADIF PARSER
-========================================== */
 
-function parseADIF(
 
-data,
 
-station
 
-){
-
-
-    qsoData=[];
-
-
-    const records =
-    data.split("<eor>");
-
-
-
-    records.forEach(record=>{
-
-
-        if(
-            !record.toLowerCase()
-            .includes("<call")
-        )
-
-            return;
-
-
-
-        function getADIF(field){
-
-
-            const regex =
-
-            new RegExp(
-
-            "<"+field+
-            ":[0-9]+>([^<]*)",
-
-            "i"
-
-            );
-
-
-            const result =
-            record.match(regex);
-
-
-
-            return result ?
-            result[1].trim()
-            :
-            "";
-
-        }
-
-
-
-
-        const call =
-        getADIF("call");
-
-
-
-        let coords =
-        callsignDB[call];
-
-
-
-        if(!coords)
-
-            return;
-
-
-
-        const stationInfo =
-        STATION_CONFIG[station];
-
-
-
-        const distance =
-
-        calculateDistance(
-
-            stationInfo.lat,
-
-            stationInfo.lon,
-
-            coords.lat,
-
-            coords.lon
-
-        );
-
-
-
-        qsoData.push({
-
-            call:call,
-
-            country:
-            coords.country,
-
-            lat:
-            coords.lat,
-
-            lon:
-            coords.lon,
-
-            band:
-            getADIF("band"),
-
-            mode:
-            getADIF("mode"),
-
-            date:
-            getADIF("qso_date"),
-
-            distance:distance,
-
-            stationLat:
-            stationInfo.lat,
-
-            stationLon:
-            stationInfo.lon
-
-        });
-
-
-    });
-
-
-
-    console.log(
-
-        "QSOs affichables:",
-
-        qsoData.length
-
-    );
-
-
-    displayQSOs();
-
-
-}
 /* ==========================================
    DISPLAY QSOs
 ========================================== */
+
 
 function displayQSOs(){
 
@@ -611,6 +816,7 @@ function displayQSOs(){
 
 
 
+
         const line =
 
         L.polyline(
@@ -649,6 +855,7 @@ function displayQSOs(){
 
 
 
+
         layers.push(
 
             marker,
@@ -658,8 +865,8 @@ function displayQSOs(){
         );
 
 
-
     });
+
 
 
 
@@ -667,7 +874,7 @@ function displayQSOs(){
 
 
 
-    if(qsoData.length > 0){
+    if(qsoData.length){
 
 
         const bounds =
@@ -683,6 +890,7 @@ function displayQSOs(){
             ])
 
         );
+
 
 
         bounds.extend([
@@ -717,9 +925,14 @@ function displayQSOs(){
 
 
 
+
+
+
+
 /* ==========================================
    STATS
 ========================================== */
+
 
 function updateStats(){
 
@@ -750,29 +963,19 @@ function updateStats(){
 
 
 
-
     if(countryNumber){
 
 
-        const countries =
+        countryNumber.textContent =
 
         new Set(
 
-            qsoData.map(
+            qsoData.map(q=>q.country)
 
-                q=>q.country
-
-            )
-
-        );
-
-
-        countryNumber.textContent =
-        countries.size;
+        ).size;
 
 
     }
-
 
 
 
@@ -786,7 +989,7 @@ function updateStats(){
         qsoData.forEach(q=>{
 
 
-            if(q.distance > max)
+            if(q.distance>max)
 
                 max=q.distance;
 
@@ -809,9 +1012,13 @@ function updateStats(){
 
 
 
+
+
+
 /* ==========================================
-   START SYSTEM
+   START
 ========================================== */
+
 
 async function startSystem(){
 
@@ -837,8 +1044,9 @@ async function startSystem(){
 
 
 
-
 startSystem();
+
+
 
 
 
@@ -849,6 +1057,7 @@ startSystem();
 /* ==========================================
    IMAGE LAZY LOAD
 ========================================== */
+
 
 document
 .querySelectorAll("img")
@@ -865,9 +1074,13 @@ document
 
 
 
+
+
+
 /* ==========================================
    BUTTON PRESS
 ========================================== */
+
 
 document
 .querySelectorAll("a")
@@ -880,9 +1093,7 @@ document
 
         ()=>{
 
-
             button.style.scale=".96";
-
 
         }
 
@@ -896,9 +1107,7 @@ document
 
         ()=>{
 
-
             button.style.scale="1";
-
 
         }
 
