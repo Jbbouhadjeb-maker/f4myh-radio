@@ -1,1 +1,15 @@
-
+[
+  {
+    "station":"F4MYH",
+    "call":"F5ABC",
+    "country":"France",
+    "lat":48.8566,
+    "lon":2.3522,
+    "band":"20m",
+    "mode":"SSB",
+    "date":"20260721",
+    "distance":0,
+    "stationLat":48.8566,
+    "stationLon":2.3522
+  }
+]
