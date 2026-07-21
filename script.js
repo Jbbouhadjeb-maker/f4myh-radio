@@ -1,6 +1,6 @@
 /* ==========================================
    F4MYH - Mission Control V9
-   LOCAL ADIF + Leaflet + Callsign Database
+   LOCAL ADIF + Leaflet
 ========================================== */
 
 
@@ -375,7 +375,7 @@ lon2
 
 
 /* ==========================================
-   LOCAL ADIF LOAD
+   LOAD LOCAL ADIF
 ========================================== */
 
 
@@ -405,7 +405,7 @@ async function loadLocalQSOs(){
 
             "ADI LOADED",
 
-            text.substring(0,200)
+            text.substring(0,300)
 
         );
 
@@ -447,16 +447,27 @@ function parseADIF(data){
 
 
     const records =
+
     data.split("<eor>");
+
 
 
 
     records.forEach(record=>{
 
 
-        if(!record.toLowerCase().includes("<call"))
+
+        if(
+
+            !record.toLowerCase()
+
+            .includes("<call")
+
+        )
 
             return;
+
+
 
 
 
@@ -464,11 +475,13 @@ function parseADIF(data){
         function getADIF(field){
 
 
+
             const regex =
 
             new RegExp(
 
                 "<"+field+
+
                 ":[0-9]+>([^<]*)",
 
                 "i"
@@ -476,7 +489,9 @@ function parseADIF(data){
             );
 
 
+
             const result =
+
             record.match(regex);
 
 
@@ -490,7 +505,11 @@ function parseADIF(data){
             "";
 
 
+
         }
+
+
+
 
 
 
@@ -501,15 +520,45 @@ function parseADIF(data){
 
 
 
-        const coords =
+
+
+        let coords =
 
         callsignDB[call];
 
 
 
-        if(!coords)
 
-            return;
+
+
+        /*
+            Si l'indicatif n'est pas
+            dans la base locale,
+            on garde quand même le QSO
+        */
+
+
+        if(!coords){
+
+
+            coords={
+
+
+                country:"Unknown",
+
+
+                lat:0,
+
+
+                lon:0
+
+
+            };
+
+
+        }
+
+
 
 
 
@@ -533,7 +582,10 @@ function parseADIF(data){
 
 
 
+
+
         qsoData.push({
+
 
 
             station:
@@ -541,7 +593,9 @@ function parseADIF(data){
             STATION.callsign,
 
 
+
             call:call,
+
 
 
             country:
@@ -549,9 +603,11 @@ function parseADIF(data){
             coords.country,
 
 
+
             lat:
 
             coords.lat,
+
 
 
             lon:
@@ -604,6 +660,7 @@ function parseADIF(data){
 
 
 
+
     console.log(
 
         "QSOs affichables:",
@@ -646,6 +703,15 @@ function displayQSOs(){
 
 
 
+        if(qso.lat===0 && qso.lon===0)
+
+            return;
+
+
+
+
+
+
         const marker =
 
         L.marker([
@@ -657,6 +723,7 @@ function displayQSOs(){
         ])
 
         .addTo(map);
+
 
 
 
@@ -691,7 +758,6 @@ function displayQSOs(){
         ${qso.distance} km
 
         `);
-
 
 
 
@@ -738,6 +804,7 @@ function displayQSOs(){
 
 
 
+
         layers.push(
 
             marker,
@@ -749,6 +816,7 @@ function displayQSOs(){
 
 
     });
+
 
 
 
@@ -808,7 +876,9 @@ function updateStats(){
 
 
 
+
     if(qsoNumber)
+
 
         qsoNumber.textContent =
 
@@ -820,7 +890,9 @@ function updateStats(){
 
 
 
+
     if(countryNumber){
+
 
 
         const countries =
@@ -842,7 +914,9 @@ function updateStats(){
         countries.size;
 
 
+
     }
+
 
 
 
@@ -852,11 +926,13 @@ function updateStats(){
     if(dxNumber){
 
 
+
         let max=0;
 
 
 
         qsoData.forEach(q=>{
+
 
 
             if(q.distance>max)
@@ -875,7 +951,9 @@ function updateStats(){
         max+" km";
 
 
+
     }
+
 
 
 }
@@ -896,9 +974,12 @@ function updateStats(){
 async function startSystem(){
 
 
+
     if(!document.getElementById("map"))
 
         return;
+
+
 
 
 
