@@ -1,25 +1,26 @@
 /* ==========================================
-   F4MYH - Mission Control V9
-   LOCAL ADIF + Leaflet
+   F4MYH - Mission Control V10
+   ADIF + Leaflet + Auto Callsign Lookup
 ========================================== */
 
 
 /* ==========================================
-   STATION CONFIG
+   CONFIG
 ========================================== */
 
-const STATION = {
+const STATION_CONFIG = {
 
-    callsign:"9A/F4MYH",
+    "9A/F4MYH": {
 
-    lat:43.5081,
+        callsign:"9A/F4MYH",
 
-    lon:16.4402,
+        lat:43.5081,
 
-    country:"Croatia"
+        lon:16.4402
+
+    }
 
 };
-
 
 
 
@@ -71,7 +72,6 @@ let charIndex=0;
 
 
 
-
 function typeWriter(){
 
 
@@ -92,16 +92,12 @@ function typeWriter(){
 
 
         setTimeout(
-
             typeWriter,
-
             55
-
         );
 
 
     }
-
     else{
 
 
@@ -110,12 +106,10 @@ function typeWriter(){
 
             typing.textContent="";
 
-
             charIndex=0;
 
 
             messageIndex++;
-
 
 
             if(messageIndex>=messages.length)
@@ -123,9 +117,7 @@ function typeWriter(){
                 messageIndex=0;
 
 
-
             typeWriter();
-
 
 
         },1200);
@@ -185,8 +177,6 @@ async function loadCallsignDatabase(){
 
 
     }
-
-
     catch(error){
 
 
@@ -213,6 +203,144 @@ async function loadCallsignDatabase(){
 
 
 /* ==========================================
+   AUTO CALLSIGN LOOKUP
+========================================== */
+
+
+async function getCallsignCoordinates(call){
+
+
+    // Base locale
+    if(callsignDB[call]){
+
+        return callsignDB[call];
+
+    }
+
+
+
+    try{
+
+
+        const response =
+        await fetch(
+
+            "https://api.hamdb.org/"
+            +
+            call
+            +
+            "/json"
+
+        );
+
+
+
+        const data =
+        await response.json();
+
+
+
+        if(
+
+            data &&
+            data.hamdb &&
+            data.hamdb.callsign
+
+        ){
+
+
+            const info =
+            data.hamdb.callsign;
+
+
+
+            const coords={
+
+
+                country:
+                info.country || "Unknown",
+
+
+                lat:
+                parseFloat(
+                    info.latitude
+                ),
+
+
+                lon:
+                parseFloat(
+                    info.longitude
+                )
+
+
+            };
+
+
+
+            if(
+
+                !isNaN(coords.lat) &&
+                !isNaN(coords.lon)
+
+            ){
+
+
+                callsignDB[call]=coords;
+
+
+
+                console.log(
+
+                    "Auto location",
+
+                    call,
+
+                    coords
+
+                );
+
+
+
+                return coords;
+
+
+            }
+
+
+        }
+
+
+    }
+    catch(error){
+
+
+        console.log(
+
+            "Lookup failed",
+
+            call
+
+        );
+
+
+    }
+
+
+
+    return null;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
    MAP INIT
 ========================================== */
 
@@ -221,7 +349,6 @@ function initMap(){
 
 
     map = L.map("map")
-
     .setView(
 
         [45,10],
@@ -229,7 +356,6 @@ function initMap(){
         3
 
     );
-
 
 
 
@@ -250,12 +376,15 @@ function initMap(){
 
     setTimeout(()=>{
 
+
         map.invalidateSize();
+
 
     },500);
 
 
 }
+
 
 
 
@@ -293,8 +422,9 @@ function clearLayers(){
 
 
 
+
 /* ==========================================
-   DISTANCE CALCULATOR
+   DISTANCE
 ========================================== */
 
 
@@ -311,41 +441,36 @@ lon2
 ){
 
 
-    const R = 6371;
+    const R=6371;
 
 
-    const dLat =
+    const dLat=
     (lat2-lat1)
     *
     Math.PI/180;
 
 
-    const dLon =
+    const dLon=
     (lon2-lon1)
     *
     Math.PI/180;
 
 
 
-    const a =
+    const a=
 
-    Math.sin(dLat/2) *
+    Math.sin(dLat/2)
+    *
     Math.sin(dLat/2)
 
     +
 
     Math.cos(lat1*Math.PI/180)
-
     *
-
     Math.cos(lat2*Math.PI/180)
-
     *
-
     Math.sin(dLon/2)
-
     *
-
     Math.sin(dLon/2);
 
 
@@ -366,114 +491,38 @@ lon2
 
 
 }
-
-
-
-
-
-
-
-
-/* ==========================================
-   LOAD LOCAL ADIF
-========================================== */
-
-
-async function loadLocalQSOs(){
-
-
-    try{
-
-
-        const response =
-
-        await fetch(
-
-            "./9A-logbook.adi"
-
-        );
-
-
-
-        const text =
-
-        await response.text();
-
-
-
-        console.log(
-
-            "ADI LOADED",
-
-            text.substring(0,300)
-
-        );
-
-
-
-        parseADIF(text);
-
-
-
-    }
-
-
-    catch(error){
-
-
-        console.error(
-
-            "LOGBOOK ERROR",
-
-            error
-
-        );
-
-
-    }
-
-
-}
 /* ==========================================
    ADIF PARSER
 ========================================== */
 
 
-function parseADIF(data){
+async function parseADIF(
+
+data,
+
+station
+
+){
 
 
     qsoData=[];
 
 
-
     const records =
-
     data.split("<eor>");
 
 
 
-
-    records.forEach(record=>{
-
+    for(const record of records){
 
 
-        if(
+        if(!record.toLowerCase().includes("<call"))
 
-            !record.toLowerCase()
-
-            .includes("<call")
-
-        )
-
-            return;
-
-
-
+            continue;
 
 
 
         function getADIF(field){
-
 
 
             const regex =
@@ -481,7 +530,6 @@ function parseADIF(data){
             new RegExp(
 
                 "<"+field+
-
                 ":[0-9]+>([^<]*)",
 
                 "i"
@@ -489,9 +537,7 @@ function parseADIF(data){
             );
 
 
-
             const result =
-
             record.match(regex);
 
 
@@ -505,61 +551,36 @@ function parseADIF(data){
             "";
 
 
-
         }
-
-
-
 
 
 
 
         const call =
-
         getADIF("call");
 
 
 
-
-
-        let coords =
-
-        callsignDB[call];
+        const coords =
+        await getCallsignCoordinates(call);
 
 
 
+        if(!coords)
+
+            continue;
 
 
 
-        /*
-            Si l'indicatif n'est pas
-            dans la base locale,
-            on garde quand même le QSO
-        */
 
-
-        if(!coords){
-
-
-            coords={
-
-
-                country:"Unknown",
-
-
-                lat:0,
-
-
-                lon:0
-
-
-            };
-
-
-        }
+        const stationInfo =
+        STATION_CONFIG[station];
 
 
 
+        if(!stationInfo)
+
+            continue;
 
 
 
@@ -568,9 +589,9 @@ function parseADIF(data){
 
         calculateDistance(
 
-            STATION.lat,
+            stationInfo.lat,
 
-            STATION.lon,
+            stationInfo.lon,
 
             coords.lat,
 
@@ -582,81 +603,55 @@ function parseADIF(data){
 
 
 
-
-
         qsoData.push({
 
 
-
-            station:
-
-            STATION.callsign,
-
+            station:station,
 
 
             call:call,
 
 
-
             country:
-
             coords.country,
 
 
-
             lat:
-
             coords.lat,
 
 
-
             lon:
-
             coords.lon,
 
 
-
             band:
-
             getADIF("band"),
 
 
-
             mode:
-
             getADIF("mode"),
 
 
-
             date:
-
             getADIF("qso_date"),
-
 
 
             distance:distance,
 
 
-
             stationLat:
-
-            STATION.lat,
-
+            stationInfo.lat,
 
 
             stationLon:
-
-            STATION.lon
+            stationInfo.lon
 
 
 
         });
 
 
-
-    });
-
-
+    }
 
 
 
@@ -686,30 +681,84 @@ function parseADIF(data){
 
 
 /* ==========================================
-   DISPLAY QSO
+   LOAD ADIF FILE
+========================================== */
+
+
+async function loadADIF(){
+
+
+    try{
+
+
+        const response =
+        await fetch("./logbook.adi");
+
+
+
+        const text =
+        await response.text();
+
+
+
+        console.log(
+
+            "ADI LOADED",
+
+            text.substring(0,300)
+
+        );
+
+
+
+        await parseADIF(
+
+            text,
+
+            "9A/F4MYH"
+
+        );
+
+
+    }
+    catch(error){
+
+
+        console.error(
+
+            "ADI ERROR",
+
+            error
+
+        );
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   DISPLAY QSOs
 ========================================== */
 
 
 function displayQSOs(){
 
 
-
     clearLayers();
 
 
 
-
     qsoData.forEach(qso=>{
-
-
-
-        if(qso.lat===0 && qso.lon===0)
-
-            return;
-
-
-
-
 
 
         const marker =
@@ -723,10 +772,6 @@ function displayQSOs(){
         ])
 
         .addTo(map);
-
-
-
-
 
 
 
@@ -758,9 +803,6 @@ function displayQSOs(){
         ${qso.distance} km
 
         `);
-
-
-
 
 
 
@@ -802,9 +844,6 @@ function displayQSOs(){
 
 
 
-
-
-
         layers.push(
 
             marker,
@@ -816,8 +855,6 @@ function displayQSOs(){
 
 
     });
-
-
 
 
 
@@ -843,50 +880,29 @@ function displayQSOs(){
 function updateStats(){
 
 
-
     const qsoNumber =
-
     document.getElementById(
-
         "qso-number"
-
     );
-
 
 
     const countryNumber =
-
     document.getElementById(
-
         "country-number"
-
     );
-
 
 
     const dxNumber =
-
     document.getElementById(
-
         "dx-number"
-
     );
-
-
-
 
 
 
     if(qsoNumber)
 
-
         qsoNumber.textContent =
-
         qsoData.length;
-
-
-
-
 
 
 
@@ -894,9 +910,7 @@ function updateStats(){
     if(countryNumber){
 
 
-
         const countries =
-
         new Set(
 
             qsoData.map(
@@ -908,31 +922,21 @@ function updateStats(){
         );
 
 
-
         countryNumber.textContent =
-
         countries.size;
-
 
 
     }
 
 
 
-
-
-
-
     if(dxNumber){
-
 
 
         let max=0;
 
 
-
         qsoData.forEach(q=>{
-
 
 
             if(q.distance>max)
@@ -940,20 +944,15 @@ function updateStats(){
                 max=q.distance;
 
 
-
         });
 
 
 
-
         dxNumber.textContent =
-
         max+" km";
 
 
-
     }
-
 
 
 }
@@ -974,12 +973,9 @@ function updateStats(){
 async function startSystem(){
 
 
-
     if(!document.getElementById("map"))
 
         return;
-
-
 
 
 
@@ -991,13 +987,10 @@ async function startSystem(){
 
 
 
-    loadLocalQSOs();
-
+    await loadADIF();
 
 
 }
-
-
 
 
 
@@ -1017,9 +1010,7 @@ startSystem();
 
 
 document
-
 .querySelectorAll("img")
-
 .forEach(img=>{
 
 
@@ -1042,9 +1033,7 @@ document
 
 
 document
-
 .querySelectorAll("a")
-
 .forEach(button=>{
 
 
