@@ -967,4 +967,80 @@ to{
 
 opacity:1;
 
-transform:
+transform:translateY(0);
+
+}
+
+}
+
+
+
+
+
+
+
+/* ==========================================
+MOBILE
+========================================== */
+
+
+@media(max-width:900px){
+
+
+.about-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+
+
+.cards{
+
+    grid-template-columns:1fr;
+
+}
+
+
+
+.gallery-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+
+
+.social-buttons{
+
+    flex-direction:column;
+
+}
+
+
+
+.qso-stats{
+
+    flex-direction:column;
+
+}
+
+
+
+section{
+
+    padding:90px 25px;
+
+}
+
+
+
+#map{
+
+    height:450px;
+
+}
+
+
+
+}
