@@ -1,6 +1,6 @@
 /* ==========================================
    F4MYH - Mission Control V4
-   JavaScript Effects
+   Clean JavaScript
 ========================================== */
 
 
@@ -9,7 +9,10 @@
 ========================================== */
 
 
-const text = [
+const typing = document.querySelector(".typing");
+
+
+const messages = [
     "Initializing station...",
     "Loading antennas...",
     "Connecting satellites...",
@@ -17,52 +20,77 @@ const text = [
 ];
 
 
-const typing = document.querySelector(".typing");
-
-
-let line = 0;
-let char = 0;
+let message = 0;
+let letter = 0;
 
 
 
-function typeWriter(){
-
-    if(line >= text.length){
-        return;
-    }
+function writeText(){
 
 
-    if(char < text[line].length){
+    if(!typing) return;
 
-        typing.textContent += text[line].charAt(char);
 
-        char++;
 
-        setTimeout(typeWriter,50);
+    if(letter < messages[message].length){
 
-    }
 
-    else{
+        typing.textContent += 
+        messages[message][letter];
+
+
+        letter++;
+
+
+        setTimeout(
+            writeText,
+            60
+        );
+
+
+    } else {
+
 
         setTimeout(()=>{
 
+
             typing.textContent="";
 
-            line++;
 
-            char=0;
+            letter=0;
 
-            typeWriter();
+
+            message++;
+
+
+
+            if(message >= messages.length){
+
+                message=0;
+
+            }
+
+
+
+            writeText();
+
+
 
         },1200);
 
+
     }
+
 
 }
 
 
 
-typeWriter();
+typing.textContent="";
+
+writeText();
+
+
 
 
 
@@ -70,120 +98,74 @@ typeWriter();
 
 
 /* ==========================================
-   SCROLL REVEAL
+   SCROLL ANIMATION
 ========================================== */
 
 
-const elements = document.querySelectorAll(
-"section,.card,.glass,.event"
+const sections = document.querySelectorAll(
+".about, .timeline, .projects, .gallery, .social"
 );
 
 
 
-elements.forEach(el=>{
+sections.forEach(section=>{
 
-    el.style.opacity="0";
 
-    el.style.transform="translateY(40px)";
+    section.style.opacity="0";
 
-    el.style.transition=
-    "all .8s ease";
+
+    section.style.transform=
+    "translateY(50px)";
+
+
+    section.style.transition=
+    "opacity .8s ease, transform .8s ease";
+
 
 });
 
 
 
-const observer = new IntersectionObserver(
 
+
+const revealObserver = new IntersectionObserver(
 (entries)=>{
 
 
 entries.forEach(entry=>{
 
 
-if(entry.isIntersecting){
+    if(entry.isIntersecting){
 
 
-entry.target.style.opacity="1";
-
-entry.target.style.transform=
-"translateY(0)";
+        entry.target.style.opacity="1";
 
 
-}
+        entry.target.style.transform=
+        "translateY(0)";
+
+
+    }
 
 
 });
 
 
 },
-
 {
-
-threshold:.15
-
+    threshold:.15
 }
-
 );
 
 
 
-elements.forEach(el=>{
 
-observer.observe(el);
+
+sections.forEach(section=>{
+
+    revealObserver.observe(section);
 
 });
-
-
-
-
-
-
-
-
-/* ==========================================
-   MOUSE PARALLAX
-========================================== */
-
-
-const hero = document.querySelector(".hero-content");
-
-
-
-document.addEventListener(
-"mousemove",
-
-(e)=>{
-
-
-const x =
-(e.clientX / window.innerWidth - .5)
-* 15;
-
-
-const y =
-(e.clientY / window.innerHeight - .5)
-* 15;
-
-
-
-if(hero){
-
-hero.style.transform =
-`
-translate(
-${x}px,
-${y}px
-)
-`;
-
-}
-
-
-
-}
-
-);
 
 
 
@@ -197,8 +179,7 @@ ${y}px
 ========================================== */
 
 
-const cards =
-document.querySelectorAll(".card");
+const cards = document.querySelectorAll(".card");
 
 
 
@@ -207,63 +188,67 @@ cards.forEach(card=>{
 
 card.addEventListener(
 "mousemove",
-
 (e)=>{
 
 
-const rect =
+const box =
 card.getBoundingClientRect();
 
 
+
 const x =
-e.clientX - rect.left;
+e.clientX - box.left;
 
 
 const y =
-e.clientY - rect.top;
+e.clientY - box.top;
 
 
 
 const rotateX =
-(y - rect.height/2) / 15;
+-(y - box.height/2) / 20;
+
 
 
 const rotateY =
-(rect.width/2 - x) / 15;
+(x - box.width/2) / 20;
 
 
 
-card.style.transform =
-`
-perspective(800px)
+
+card.style.transform = `
+
+perspective(900px)
+
 rotateX(${rotateX}deg)
+
 rotateY(${rotateY}deg)
+
 translateY(-10px)
+
 `;
 
 
 
-}
+});
 
 
 
-);
 
 
 
 card.addEventListener(
 "mouseleave",
-
 ()=>{
 
 
-card.style.transform=
-"";
+card.style.transform="";
 
 
 }
 
 );
+
 
 
 });
@@ -275,36 +260,95 @@ card.style.transform=
 
 
 
+
+
 /* ==========================================
-   SMOOTH BUTTON FEEDBACK
+   HERO MOUSE MOVEMENT
 ========================================== */
 
 
-document.querySelectorAll("a")
-.forEach(link=>{
+const hero =
+document.querySelector(".hero-content");
 
 
-link.addEventListener(
-"click",
 
+document.addEventListener(
+"mousemove",
+(e)=>{
+
+
+if(!hero) return;
+
+
+
+const x =
+(e.clientX / window.innerWidth - .5)
+* 10;
+
+
+
+const y =
+(e.clientY / window.innerHeight - .5)
+* 10;
+
+
+
+
+hero.style.transform =
+`
+translate(
+${x}px,
+${y}px
+)
+
+`;
+
+
+
+});
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   BUTTON CLICK EFFECT
+========================================== */
+
+
+const buttons =
+document.querySelectorAll("a");
+
+
+
+buttons.forEach(button=>{
+
+
+button.addEventListener(
+"mousedown",
 ()=>{
 
 
-link.style.transform=
+button.style.transform=
 "scale(.95)";
 
 
-setTimeout(()=>{
-
-link.style.transform="";
-
-},150);
+});
 
 
-}
+button.addEventListener(
+"mouseup",
+()=>{
 
 
-);
+button.style.transform="";
+
+
+});
 
 
 });
