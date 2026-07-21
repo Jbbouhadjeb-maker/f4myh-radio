@@ -183,7 +183,7 @@ async function loadCallsignDatabase(){
 
 
         const response =
-        await fetch("callsigns.json");
+        await fetch("./callsigns.json");
 
 
 
