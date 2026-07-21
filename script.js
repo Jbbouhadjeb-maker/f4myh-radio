@@ -1,43 +1,22 @@
 /* ==========================================
    F4MYH - Mission Control V9
-   QRZ + Leaflet + Local Callsign Database
+   LOCAL ADIF + Leaflet + Callsign Database
 ========================================== */
 
 
 /* ==========================================
-   QRZ CONFIG
+   STATION CONFIG
 ========================================== */
 
-const QRZ_CONFIG = {
+const STATION = {
 
-    stations: {
+    callsign:"9A/F4MYH",
 
-        "F4MYH": {
+    lat:43.5081,
 
-            callsign:"F4MYH",
+    lon:16.4402,
 
-            apiKey:"7A95-D46F-BA03-DF11",
-
-            lat:48.8566,
-
-            lon:2.3522
-
-        },
-
-
-        "9A/F4MYH": {
-
-            callsign:"9A/F4MYH",
-
-            apiKey:"6998-8E54-7255-6607",
-
-            lat:43.5081,
-
-            lon:16.4402
-
-        }
-
-    }
+    country:"Croatia"
 
 };
 
@@ -97,6 +76,7 @@ function typeWriter(){
 
 
     if(!typing)
+
         return;
 
 
@@ -112,8 +92,11 @@ function typeWriter(){
 
 
         setTimeout(
+
             typeWriter,
+
             55
+
         );
 
 
@@ -193,8 +176,11 @@ async function loadCallsignDatabase(){
 
 
         console.log(
+
             "Callsign database loaded",
+
             callsignDB
+
         );
 
 
@@ -205,8 +191,11 @@ async function loadCallsignDatabase(){
 
 
         console.error(
+
             "Callsign database error",
+
             error
+
         );
 
 
@@ -232,6 +221,7 @@ function initMap(){
 
 
     map = L.map("map")
+
     .setView(
 
         [45,10],
@@ -365,111 +355,63 @@ lon2
         R *
         2 *
         Math.atan2(
+
             Math.sqrt(a),
+
             Math.sqrt(1-a)
+
         )
 
     );
 
 
 }
+
+
+
+
+
+
+
+
 /* ==========================================
-   QRZ API FETCH
+   LOCAL ADIF LOAD
 ========================================== */
 
 
-async function loadQRZQSOs(station){
-
-
-    const config =
-    QRZ_CONFIG.stations[station];
-
-
-
-    if(!config){
-
-        console.error(
-            "Station inconnue"
-        );
-
-        return;
-
-    }
-
-
-
-
-    const formData = new URLSearchParams();
-
-
-    formData.append(
-        "KEY",
-        config.apiKey
-    );
-
-
-    formData.append(
-        "ACTION",
-        "FETCH"
-    );
-
-
-    formData.append(
-        "OPTION",
-        "ALL,MAX:250"
-    );
-
-
+async function loadLocalQSOs(){
 
 
     try{
 
 
         const response =
+
         await fetch(
 
-            "https://qrz-proxy.jb-bouhadjeb.workers.dev",
-
-            {
-
-                method:"POST",
-
-                headers:{
-
-                    "Content-Type":
-                    "application/x-www-form-urlencoded"
-
-                },
-
-                body:formData
-
-            }
+            "./9A-logbook.adi"
 
         );
 
 
 
         const text =
+
         await response.text();
 
 
 
-
         console.log(
-            "QRZ RESPONSE",
-            text
-        );
 
+            "ADI LOADED",
 
-
-
-        parseADIF(
-
-            text,
-
-            station
+            text.substring(0,200)
 
         );
+
+
+
+        parseADIF(text);
 
 
 
@@ -480,8 +422,11 @@ async function loadQRZQSOs(station){
 
 
         console.error(
-            "QRZ API ERROR",
+
+            "LOGBOOK ERROR",
+
             error
+
         );
 
 
@@ -489,28 +434,12 @@ async function loadQRZQSOs(station){
 
 
 }
-
-
-
-
-
-
-
-
-
 /* ==========================================
    ADIF PARSER
 ========================================== */
 
 
-function parseADIF(
-
-data,
-
-station
-
-){
-
+function parseADIF(data){
 
 
     qsoData=[];
@@ -522,12 +451,10 @@ station
 
 
 
-
     records.forEach(record=>{
 
 
-
-        if(!record.includes("<call"))
+        if(!record.toLowerCase().includes("<call"))
 
             return;
 
@@ -555,8 +482,11 @@ station
 
 
             return result ?
+
             result[1].trim()
+
             :
+
             "";
 
 
@@ -565,18 +495,15 @@ station
 
 
 
-
-
         const call =
+
         getADIF("call");
 
 
 
-
         const coords =
+
         callsignDB[call];
-
-
 
 
 
@@ -588,15 +515,13 @@ station
 
 
 
-
-
         const distance =
 
         calculateDistance(
 
-            configStation(station).lat,
+            STATION.lat,
 
-            configStation(station).lon,
+            STATION.lon,
 
             coords.lat,
 
@@ -608,37 +533,47 @@ station
 
 
 
-
         qsoData.push({
 
 
-            station:station,
+            station:
+
+            STATION.callsign,
 
 
             call:call,
 
 
             country:
+
             coords.country,
 
 
             lat:
+
             coords.lat,
 
 
             lon:
+
             coords.lon,
 
 
+
             band:
+
             getADIF("band"),
 
 
+
             mode:
+
             getADIF("mode"),
 
 
+
             date:
+
             getADIF("qso_date"),
 
 
@@ -646,12 +581,16 @@ station
             distance:distance,
 
 
+
             stationLat:
-            configStation(station).lat,
+
+            STATION.lat,
+
 
 
             stationLon:
-            configStation(station).lon
+
+            STATION.lon
 
 
 
@@ -677,22 +616,6 @@ station
 
     displayQSOs();
 
-
-
-}
-
-
-
-
-
-
-
-
-
-function configStation(name){
-
-
-    return QRZ_CONFIG.stations[name];
 
 
 }
@@ -768,6 +691,7 @@ function displayQSOs(){
         ${qso.distance} km
 
         `);
+
 
 
 
@@ -853,22 +777,31 @@ function updateStats(){
 
 
     const qsoNumber =
+
     document.getElementById(
+
         "qso-number"
+
     );
 
 
 
     const countryNumber =
+
     document.getElementById(
+
         "country-number"
+
     );
 
 
 
     const dxNumber =
+
     document.getElementById(
+
         "dx-number"
+
     );
 
 
@@ -878,7 +811,9 @@ function updateStats(){
     if(qsoNumber)
 
         qsoNumber.textContent =
+
         qsoData.length;
+
 
 
 
@@ -903,6 +838,7 @@ function updateStats(){
 
 
         countryNumber.textContent =
+
         countries.size;
 
 
@@ -928,12 +864,14 @@ function updateStats(){
                 max=q.distance;
 
 
+
         });
 
 
 
 
         dxNumber.textContent =
+
         max+" km";
 
 
@@ -972,9 +910,8 @@ async function startSystem(){
 
 
 
-    loadQRZQSOs(
-        "F4MYH"
-    );
+    loadLocalQSOs();
+
 
 
 }
@@ -992,72 +929,6 @@ startSystem();
 
 
 
-/* ==========================================
-   STATION BUTTONS
-========================================== */
-
-
-document
-.querySelectorAll(".station-btn")
-.forEach(button=>{
-
-
-    button.addEventListener(
-
-        "click",
-
-        ()=>{
-
-
-            document
-            .querySelectorAll(".station-btn")
-            .forEach(btn=>{
-
-
-                btn.classList.remove(
-                    "active"
-                );
-
-
-            });
-
-
-
-            button.classList.add(
-                "active"
-            );
-
-
-
-            if(button.dataset.station==="ALL"){
-
-
-                loadQRZQSOs("F4MYH");
-
-
-            }
-            else{
-
-
-                loadQRZQSOs(
-                    button.dataset.station
-                );
-
-
-            }
-
-
-        }
-
-    );
-
-
-});
-
-
-
-
-
 
 /* ==========================================
    IMAGE LAZY LOAD
@@ -1065,7 +936,9 @@ document
 
 
 document
+
 .querySelectorAll("img")
+
 .forEach(img=>{
 
 
@@ -1081,13 +954,16 @@ document
 
 
 
+
 /* ==========================================
    BUTTON PRESS
 ========================================== */
 
 
 document
+
 .querySelectorAll("a")
+
 .forEach(button=>{
 
 
@@ -1097,7 +973,9 @@ document
 
         ()=>{
 
+
             button.style.scale=".96";
+
 
         }
 
@@ -1111,7 +989,9 @@ document
 
         ()=>{
 
+
             button.style.scale="1";
+
 
         }
 
