@@ -428,7 +428,7 @@ async function loadQRZQSOs(station){
         const response =
         await fetch(
 
-            "https://logbook.qrz.com/api",
+            "https://qrz-proxy.ton-sous-domaine.workers.dev",
 
             {
 
