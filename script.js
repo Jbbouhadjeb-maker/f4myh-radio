@@ -1,11 +1,16 @@
 /* ==========================================
-   F4MYH - Clean Script
+   F4MYH - Mission Control V5
+   Lightweight JavaScript
 ========================================== */
 
 
-/* TYPEWRITER */
+/* ==========================================
+   TYPEWRITER EFFECT
+========================================== */
+
 
 const typing = document.querySelector(".typing");
+
 
 const messages = [
     "Initializing station...",
@@ -14,100 +19,216 @@ const messages = [
     "System online ✓"
 ];
 
-let msg = 0;
-let char = 0;
+
+let messageIndex = 0;
+let charIndex = 0;
+
 
 
 function typeWriter(){
 
+
     if(!typing) return;
 
 
-    if(char < messages[msg].length){
 
-        typing.textContent += messages[msg][char];
+    if(charIndex < messages[messageIndex].length){
 
-        char++;
 
-        setTimeout(typeWriter,60);
+        typing.textContent +=
+        messages[messageIndex][charIndex];
 
-    } else {
+
+        charIndex++;
+
+
+        setTimeout(
+            typeWriter,
+            55
+        );
+
+
+    }else{
+
 
         setTimeout(()=>{
 
-            typing.textContent="";
-            char=0;
-            msg++;
 
-            if(msg >= messages.length){
-                msg=0;
+            typing.textContent="";
+
+
+            charIndex=0;
+
+
+            messageIndex++;
+
+
+
+            if(messageIndex >= messages.length){
+
+                messageIndex=0;
+
             }
+
+
 
             typeWriter();
 
+
+
         },1200);
 
+
     }
+
 
 }
 
 
+
 typing.textContent="";
+
 typeWriter();
 
 
 
 
 
-/* CARD HOVER 3D */
-
-const cards = document.querySelectorAll(".card");
 
 
-cards.forEach(card=>{
+/* ==========================================
+   SIMPLE SCROLL REVEAL
+========================================== */
 
 
-card.addEventListener("mousemove",(e)=>{
-
-
-const rect = card.getBoundingClientRect();
-
-
-const x =
-e.clientX - rect.left;
-
-
-const y =
-e.clientY - rect.top;
+const revealElements =
+document.querySelectorAll(
+".about, .timeline, .projects, .gallery, .social"
+);
 
 
 
-const rotateX =
--(y - rect.height / 2) / 25;
+revealElements.forEach(element=>{
 
 
-const rotateY =
-(x - rect.width / 2) / 25;
+    element.style.opacity="0";
+
+    element.style.transform=
+    "translateY(30px)";
 
 
-
-card.style.transform = 
-`
-perspective(800px)
-rotateX(${rotateX}deg)
-rotateY(${rotateY}deg)
-`;
-
+    element.style.transition=
+    "opacity .8s ease, transform .8s ease";
 
 
 });
 
 
 
-card.addEventListener("mouseleave",()=>{
+
+const observer =
+new IntersectionObserver(
+(entries)=>{
 
 
-card.style.transform="";
+entries.forEach(entry=>{
+
+
+    if(entry.isIntersecting){
+
+
+        entry.target.style.opacity="1";
+
+
+        entry.target.style.transform=
+        "translateY(0)";
+
+
+    }
+
+
+});
+
+
+},
+{
+    threshold:0.15
+});
+
+
+
+
+
+revealElements.forEach(element=>{
+
+
+    observer.observe(element);
+
+
+});
+
+
+
+
+
+
+
+
+/* ==========================================
+   IMAGE LOADING FIX
+========================================== */
+
+
+const images =
+document.querySelectorAll("img");
+
+
+
+images.forEach(img=>{
+
+
+    img.loading="lazy";
+
+
+});
+
+
+
+
+
+
+
+
+/* ==========================================
+   BUTTON PRESS EFFECT
+========================================== */
+
+
+const buttons =
+document.querySelectorAll("a");
+
+
+
+buttons.forEach(button=>{
+
+
+button.addEventListener(
+"mousedown",
+()=>{
+
+
+button.style.scale=".96";
+
+
+});
+
+
+button.addEventListener(
+"mouseup",
+()=>{
+
+
+button.style.scale="1";
 
 
 });
