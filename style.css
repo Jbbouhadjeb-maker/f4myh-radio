@@ -1,5 +1,5 @@
 /* ==========================================
-   F4MYH - Mission Control V4
+   F4MYH - Mission Control V5
    Apple / Space / Engineering
 ========================================== */
 
@@ -16,6 +16,7 @@
 html{
     scroll-behavior:smooth;
 }
+
 
 
 body{
@@ -38,7 +39,6 @@ body{
 
 
 
-
 /* ==========================================
    SPACE BACKGROUND
 ========================================== */
@@ -54,26 +54,24 @@ body::before{
 
     z-index:-2;
 
+
     background:
 
     radial-gradient(
-        circle at 50% 5%,
-        rgba(41,151,255,.45),
-        transparent 35%
-    ),
-
-    radial-gradient(
-        circle at 80% 70%,
-        rgba(0,122,255,.20),
-        transparent 35%
+        circle at 50% 10%,
+        rgba(41,151,255,.28),
+        transparent 40%
     ),
 
     linear-gradient(
+        180deg,
         #050505,
         #020409
     );
 
 }
+
+
 
 
 
@@ -96,11 +94,12 @@ body::before{
 
     background-size:90px 90px;
 
-    opacity:.12;
+
+    opacity:.08;
 
 
     animation:
-    starsMove 100s linear infinite;
+    starsMove 180s linear infinite;
 
 }
 
@@ -108,19 +107,23 @@ body::before{
 
 @keyframes starsMove{
 
+
 from{
 
 transform:translateY(0);
 
 }
 
+
 to{
 
-transform:translateY(-600px);
+transform:translateY(-500px);
 
 }
 
+
 }
+
 
 
 
@@ -133,15 +136,21 @@ transform:translateY(-600px);
 
 .hero{
 
+
     height:100vh;
+
 
     display:flex;
 
+
     justify-content:center;
+
 
     align-items:center;
 
+
     text-align:center;
+
 
 }
 
@@ -149,21 +158,28 @@ transform:translateY(-600px);
 
 .hero-content{
 
+
     animation:
-    appear 1.5s ease;
+    appear 1.2s ease;
+
 
 }
 
 
 
 
+
 .small-title{
+
 
     color:#2997ff;
 
+
     letter-spacing:8px;
 
+
     font-size:14px;
+
 
 }
 
@@ -195,18 +211,20 @@ transform:translateY(-600px);
     );
 
 
+
     -webkit-background-clip:text;
 
 
     color:transparent;
+
 
 }
 
 
 
 
-
 .hero h2{
+
 
     font-size:
 
@@ -222,11 +240,15 @@ transform:translateY(-600px);
 
 .typing{
 
+
     margin-top:35px;
+
 
     color:#c7c7cc;
 
+
     font-size:22px;
+
 
 }
 
@@ -234,7 +256,14 @@ transform:translateY(-600px);
 
 
 
+
+/* ==========================================
+   BUTTON
+========================================== */
+
+
 .button{
+
 
     display:inline-block;
 
@@ -245,10 +274,13 @@ transform:translateY(-600px);
     padding:18px 45px;
 
 
+
     border-radius:50px;
 
 
+
     background:#2997ff;
+
 
 
     color:white;
@@ -260,7 +292,9 @@ transform:translateY(-600px);
     font-weight:600;
 
 
+
     transition:.3s;
+
 
 
 }
@@ -269,13 +303,16 @@ transform:translateY(-600px);
 
 .button:hover{
 
-    transform:translateY(-8px);
+
+    transform:translateY(-5px);
+
 
 
     box-shadow:
 
-    0 20px 50px
-    rgba(41,151,255,.45);
+    0 15px 40px
+    rgba(41,151,255,.35);
+
 
 }
 
@@ -291,7 +328,9 @@ transform:translateY(-600px);
 
 section{
 
+
     padding:140px 8%;
+
 
 }
 
@@ -299,11 +338,15 @@ section{
 
 .label{
 
+
     color:#2997ff;
+
 
     letter-spacing:7px;
 
+
     font-size:14px;
+
 
 }
 
@@ -311,15 +354,19 @@ section{
 
 h2{
 
+
     font-size:
 
     clamp(55px,8vw,110px);
 
 
+
     letter-spacing:-6px;
 
 
+
     margin:40px 0;
+
 
 }
 
@@ -327,11 +374,15 @@ h2{
 
 p{
 
+
     color:#c7c7cc;
+
 
     font-size:21px;
 
+
     line-height:1.7;
+
 
 }
 
@@ -348,17 +399,23 @@ p{
 
 .about{
 
+
     text-align:center;
+
 
 }
 
 
 
+
 .about-grid{
+
 
     margin-top:70px;
 
+
     display:grid;
+
 
     grid-template-columns:
 
@@ -370,15 +427,17 @@ p{
 
     text-align:left;
 
-}
 
+}
 
 
 
 
 .glass{
 
+
     padding:40px;
+
 
     border-radius:35px;
 
@@ -388,12 +447,15 @@ p{
     rgba(255,255,255,.08);
 
 
+
     border:
 
     1px solid rgba(255,255,255,.15);
 
 
-    backdrop-filter:blur(25px);
+
+    backdrop-filter:blur(15px);
+
 
 }
 
@@ -401,9 +463,12 @@ p{
 
 .glass h3{
 
+
     font-size:30px;
 
+
     margin-bottom:25px;
+
 
 }
 
@@ -420,14 +485,18 @@ p{
 
 .line{
 
+
     margin-top:80px;
+
 
     border-left:
 
     2px solid #2997ff;
 
 
+
     padding-left:50px;
+
 
 }
 
@@ -435,7 +504,9 @@ p{
 
 .event{
 
+
     margin-bottom:70px;
+
 
 }
 
@@ -443,9 +514,12 @@ p{
 
 .event span{
 
+
     color:#2997ff;
 
+
     letter-spacing:4px;
+
 
 }
 
@@ -453,12 +527,14 @@ p{
 
 .event h3{
 
+
     font-size:40px;
+
 
     margin:15px 0;
 
-}
 
+}
 
 
 
@@ -467,11 +543,12 @@ p{
 
 
 /* ==========================================
-   PROJECT CARDS
+   CARDS
 ========================================== */
 
 
 .cards{
+
 
     display:grid;
 
@@ -481,13 +558,17 @@ p{
     repeat(3,1fr);
 
 
+
     gap:35px;
+
 
 }
 
 
 
+
 .card{
+
 
     overflow:hidden;
 
@@ -495,9 +576,11 @@ p{
     border-radius:35px;
 
 
+
     background:
 
     rgba(255,255,255,.08);
+
 
 
     border:
@@ -505,10 +588,13 @@ p{
     1px solid rgba(255,255,255,.15);
 
 
-    backdrop-filter:blur(20px);
+
+    backdrop-filter:blur(15px);
 
 
-    transition:.4s;
+
+    transition:.3s;
+
 
 }
 
@@ -516,16 +602,24 @@ p{
 
 .card:hover{
 
+
+    transform:translateY(-8px);
+
+
+
     box-shadow:
 
-    0 25px 60px
-    rgba(41,151,255,.25);
+    0 20px 50px
+    rgba(41,151,255,.2);
+
 
 }
 
 
 
+
 .card img{
+
 
     width:100%;
 
@@ -533,7 +627,9 @@ p{
     height:300px;
 
 
+
     object-fit:cover;
+
 
 }
 
@@ -541,7 +637,9 @@ p{
 
 .card div{
 
+
     padding:35px;
+
 
 }
 
@@ -549,12 +647,14 @@ p{
 
 .card h3{
 
+
     font-size:32px;
+
 
     margin-bottom:15px;
 
-}
 
+}
 
 
 
@@ -569,6 +669,7 @@ p{
 
 .gallery-grid{
 
+
     display:grid;
 
 
@@ -577,9 +678,12 @@ p{
     repeat(3,1fr);
 
 
+
     gap:30px;
 
+
 }
+
 
 
 
@@ -592,13 +696,16 @@ p{
     height:400px;
 
 
-    object-fit:cover;
+    object-fit:contain;
+
 
 
     background:#000;
 
 
+
     border-radius:35px;
+
 
 
     border:
@@ -606,15 +713,20 @@ p{
     1px solid rgba(255,255,255,.15);
 
 
-    transition:.4s;
+
+    transition:.3s;
+
 
 }
 
 
 
+
 .gallery-grid img:hover{
 
-    transform:scale(1.04);
+
+    transform:scale(1.02);
+
 
 }
 
@@ -631,25 +743,34 @@ p{
 
 .social{
 
+
     text-align:center;
 
+
 }
+
 
 
 
 .social-buttons{
 
+
     display:flex;
+
 
     justify-content:center;
 
+
     gap:25px;
+
 
 }
 
 
 
+
 .social-buttons a{
+
 
     padding:18px 45px;
 
@@ -657,9 +778,11 @@ p{
     border-radius:50px;
 
 
+
     background:
 
     rgba(255,255,255,.08);
+
 
 
     border:
@@ -667,10 +790,13 @@ p{
     1px solid rgba(255,255,255,.15);
 
 
+
     color:white;
 
 
+
     text-decoration:none;
+
 
 
     transition:.3s;
@@ -682,12 +808,15 @@ p{
 
 .social-buttons a:hover{
 
+
     background:#2997ff;
 
 
     transform:translateY(-5px);
 
+
 }
+
 
 
 
@@ -701,6 +830,7 @@ p{
 
 footer{
 
+
     text-align:center;
 
 
@@ -709,26 +839,34 @@ footer{
 
     background:#000;
 
+
 }
 
 
 
+
 footer h2{
+
 
     font-size:
 
     clamp(100px,20vw,250px);
 
 
+
     letter-spacing:-15px;
+
 
 }
 
 
 
+
 footer p{
 
+
     color:#888;
+
 
 }
 
@@ -815,14 +953,6 @@ flex-direction:column;
 section{
 
 padding:90px 25px;
-
-}
-
-
-
-.hero h1{
-
-letter-spacing:-8px;
 
 }
 
