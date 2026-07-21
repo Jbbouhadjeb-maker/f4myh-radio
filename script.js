@@ -1,11 +1,11 @@
 /* ==========================================
    F4MYH - Mission Control V11
-   Local ADIF + Leaflet + Callsign Database
+   ADIF + Leaflet + Local Callsign Database
 ========================================== */
 
 
 /* ==========================================
-   CONFIG
+   STATION CONFIG
 ========================================== */
 
 const STATION_CONFIG = {
@@ -16,7 +16,9 @@ const STATION_CONFIG = {
 
         lat:43.5081,
 
-        lon:16.4402
+        lon:16.4402,
+
+        country:"Croatia"
 
     }
 
@@ -43,17 +45,12 @@ let callsignDB={};
 
 
 
-
-
-
 /* ==========================================
    TYPEWRITER
 ========================================== */
 
 
-const typing =
-document.querySelector(".typing");
-
+const typing=document.querySelector(".typing");
 
 
 const messages=[
@@ -71,12 +68,9 @@ const messages=[
 ];
 
 
-
 let messageIndex=0;
 
 let charIndex=0;
-
-
 
 
 
@@ -84,9 +78,7 @@ function typeWriter(){
 
 
     if(!typing)
-
         return;
-
 
 
     if(charIndex < messages[messageIndex].length){
@@ -100,11 +92,8 @@ function typeWriter(){
 
 
         setTimeout(
-
             typeWriter,
-
             55
-
         );
 
 
@@ -116,6 +105,7 @@ function typeWriter(){
 
 
             typing.textContent="";
+
 
             charIndex=0;
 
@@ -155,8 +145,6 @@ if(typing){
 
 
 
-
-
 /* ==========================================
    LOAD CALLSIGN DATABASE
 ========================================== */
@@ -179,11 +167,8 @@ async function loadCallsignDatabase(){
 
 
         console.log(
-
             "Callsign database loaded",
-
             callsignDB
-
         );
 
 
@@ -192,11 +177,8 @@ async function loadCallsignDatabase(){
 
 
         console.error(
-
             "Callsign database error",
-
             error
-
         );
 
 
@@ -204,55 +186,6 @@ async function loadCallsignDatabase(){
 
 
 }
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   CALLSIGN LOOKUP LOCAL
-========================================== */
-
-
-async function getCallsignCoordinates(call){
-
-
-    const cleanCall =
-    call
-    .trim()
-    .toUpperCase();
-
-
-
-    if(callsignDB[cleanCall]){
-
-
-        return callsignDB[cleanCall];
-
-
-    }
-
-
-
-    console.log(
-
-        "Coordonnées manquantes:",
-
-        cleanCall
-
-    );
-
-
-
-    return null;
-
-
-}
-
 
 
 
@@ -269,7 +202,8 @@ async function getCallsignCoordinates(call){
 function initMap(){
 
 
-    map = L.map("map")
+    map =
+    L.map("map")
     .setView(
 
         [45,10],
@@ -287,7 +221,6 @@ function initMap(){
         {
 
             attribution:
-
             "© OpenStreetMap © CARTO"
 
         }
@@ -306,8 +239,6 @@ function initMap(){
 
 
 }
-
-
 
 
 
@@ -343,8 +274,6 @@ function clearLayers(){
 
 
 
-
-
 /* ==========================================
    DISTANCE
 ========================================== */
@@ -366,12 +295,10 @@ lon2
     const R=6371;
 
 
-
     const dLat =
     (lat2-lat1)
     *
     Math.PI/180;
-
 
 
     const dLon =
@@ -383,18 +310,23 @@ lon2
 
     const a =
 
-    Math.sin(dLat/2)
-    *
+    Math.sin(dLat/2) *
     Math.sin(dLat/2)
 
     +
 
     Math.cos(lat1*Math.PI/180)
+
     *
+
     Math.cos(lat2*Math.PI/180)
+
     *
+
     Math.sin(dLon/2)
+
     *
+
     Math.sin(dLon/2);
 
 
@@ -420,31 +352,39 @@ lon2
 ========================================== */
 
 
-async function parseADIF(
-
-data,
-
-station
-
-){
+async function parseADIF(data, station){
 
 
     qsoData=[];
 
 
     const records =
-    data.split("<eor>");
+    data.split(/<eor>/i);
+
+
+
+    const stationInfo =
+    STATION_CONFIG[station];
+
+
+
+    if(!stationInfo){
+
+        console.error(
+            "Station inconnue",
+            station
+        );
+
+        return;
+
+    }
 
 
 
     for(const record of records){
 
 
-        if(
-            !record
-            .toLowerCase()
-            .includes("<call")
-        )
+        if(!record.toLowerCase().includes("<call"))
 
             continue;
 
@@ -478,38 +418,47 @@ station
 
             "";
 
-
         }
 
 
 
-
-
         const call =
-        getADIF("call");
+        getADIF("call").toUpperCase();
 
 
 
-        const coords =
-        await getCallsignCoordinates(call);
-
-
-
-        if(!coords)
+        if(!call)
 
             continue;
 
 
 
-
-        const stationInfo =
-        STATION_CONFIG[station];
-
+        let coords =
+        callsignDB[call];
 
 
-        if(!stationInfo)
+
+        /*
+          Si le pays n'est pas dans
+          callsigns.json on ignore pas
+          le QSO, on met position inconnue
+        */
+
+
+        if(!coords){
+
+
+            console.log(
+                "Position inconnue:",
+                call
+            );
+
 
             continue;
+
+
+        }
+
 
 
 
@@ -534,40 +483,57 @@ station
 
         qsoData.push({
 
+
             station:station,
+
 
             call:call,
 
+
             country:
-            coords.country,
+            coords.country || "Unknown",
+
 
             lat:
             coords.lat,
 
+
             lon:
             coords.lon,
+
 
             band:
             getADIF("band"),
 
+
             mode:
             getADIF("mode"),
+
 
             date:
             getADIF("qso_date"),
 
+
+
             distance:distance,
+
 
             stationLat:
             stationInfo.lat,
 
+
             stationLon:
             stationInfo.lon
+
+
 
         });
 
 
+
     }
+
+
 
 
 
@@ -581,19 +547,12 @@ station
 
 
 
-    console.log(
-
-        qsoData
-
-    );
-
-
-
     displayQSOs();
 
 
 
 }
+
 
 
 
@@ -625,11 +584,8 @@ async function loadADIF(){
 
 
         console.log(
-
             "ADI LOADED",
-
             text.substring(0,300)
-
         );
 
 
@@ -644,15 +600,14 @@ async function loadADIF(){
 
 
     }
+
+
     catch(error){
 
 
         console.error(
-
             "ADI ERROR",
-
             error
-
         );
 
 
@@ -670,7 +625,7 @@ async function loadADIF(){
 
 
 /* ==========================================
-   DISPLAY QSOs
+   DISPLAY MAP
 ========================================== */
 
 
@@ -678,6 +633,10 @@ function displayQSOs(){
 
 
     clearLayers();
+
+
+
+    let bounds=[];
 
 
 
@@ -729,8 +688,6 @@ function displayQSOs(){
 
 
 
-
-
         const line =
 
         L.polyline(
@@ -769,6 +726,8 @@ function displayQSOs(){
 
 
 
+
+
         layers.push(
 
             marker,
@@ -779,21 +738,75 @@ function displayQSOs(){
 
 
 
+        bounds.push([
+
+            qso.lat,
+
+            qso.lon
+
+        ]);
+
+
+
     });
 
 
 
-    if(qsoData.length>0){
 
 
-        const group =
-        L.featureGroup(layers);
+    /*
+       Ajout du point station
+    */
 
+
+    const stationMarker =
+
+    L.marker([
+
+        43.5081,
+
+        16.4402
+
+    ])
+
+    .addTo(map);
+
+
+
+    stationMarker.bindPopup(
+
+        "<b>9A/F4MYH</b><br>Croatia Station"
+
+    );
+
+
+
+    layers.push(
+
+        stationMarker
+
+    );
+
+
+
+    bounds.push([
+
+        43.5081,
+
+        16.4402
+
+    ]);
+
+
+
+
+
+    if(bounds.length){
 
 
         map.fitBounds(
 
-            group.getBounds(),
+            bounds,
 
             {
 
@@ -836,19 +849,16 @@ function updateStats(){
     );
 
 
-
     const countryNumber =
     document.getElementById(
         "country-number"
     );
 
 
-
     const dxNumber =
     document.getElementById(
         "dx-number"
     );
-
 
 
 
@@ -859,12 +869,11 @@ function updateStats(){
 
 
 
-
-
     if(countryNumber){
 
 
-        const countries =
+        countryNumber.textContent =
+
         new Set(
 
             qsoData.map(
@@ -873,16 +882,10 @@ function updateStats(){
 
             )
 
-        );
-
-
-        countryNumber.textContent =
-        countries.size;
+        ).size;
 
 
     }
-
-
 
 
 
@@ -890,7 +893,6 @@ function updateStats(){
 
 
         let max=0;
-
 
 
         qsoData.forEach(q=>{
@@ -913,6 +915,7 @@ function updateStats(){
 
 
 }
+
 
 
 
@@ -961,7 +964,6 @@ startSystem();
 
 
 
-
 /* ==========================================
    IMAGE LAZY LOAD
 ========================================== */
@@ -976,7 +978,6 @@ document
 
 
 });
-
 
 
 
