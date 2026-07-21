@@ -1,10 +1,8 @@
 /* ==========================================
-   F4MYH - Amateur Radio Station
-   Apple Space Engineering Design V2
+   F4MYH - Mission Control V4
+   Apple / SpaceX / Engineering Design
 ========================================== */
 
-
-/* RESET */
 
 *{
     margin:0;
@@ -18,7 +16,6 @@ html{
 }
 
 
-
 body{
 
     font-family:
@@ -29,7 +26,7 @@ body{
     Arial,
     sans-serif;
 
-    background:#050505;
+    background:#020409;
 
     color:white;
 
@@ -40,7 +37,7 @@ body{
 
 
 /* ==========================================
-   GLOBAL BACKGROUND
+   SPACE BACKGROUND
 ========================================== */
 
 
@@ -50,30 +47,66 @@ body::before{
 
     position:fixed;
 
-    width:900px;
-
-    height:900px;
-
-    border-radius:50%;
+    inset:0;
 
     background:
 
     radial-gradient(
-        circle,
+        circle at 50% 10%,
         rgba(41,151,255,.25),
-        transparent 65%
+        transparent 35%
+    ),
+
+    radial-gradient(
+        circle at 80% 80%,
+        rgba(0,122,255,.15),
+        transparent 30%
     );
 
+    z-index:-2;
 
-    filter:blur(80px);
+}
 
-    top:-200px;
 
-    left:50%;
 
-    transform:translateX(-50%);
+#stars{
+
+    position:fixed;
+
+    inset:0;
+
+    background-image:
+
+    radial-gradient(
+        white 1px,
+        transparent 1px
+    );
+
+    background-size:80px 80px;
+
+    opacity:.15;
+
+    animation:stars 80s linear infinite;
 
     z-index:-1;
+
+}
+
+
+
+@keyframes stars{
+
+from{
+
+transform:translateY(0);
+
+}
+
+to{
+
+transform:translateY(-500px);
+
+}
 
 }
 
@@ -89,7 +122,7 @@ body::before{
 
 .hero{
 
-    min-height:100vh;
+    height:100vh;
 
     display:flex;
 
@@ -101,45 +134,6 @@ body::before{
 
     position:relative;
 
-    overflow:hidden;
-
-
-    background:
-
-    radial-gradient(
-        circle at 50% 25%,
-        #174d85 0%,
-        #0b2440 35%,
-        #050505 75%
-    );
-
-}
-
-
-
-.hero::after{
-
-    content:"";
-
-    position:absolute;
-
-    width:700px;
-
-    height:700px;
-
-    border-radius:50%;
-
-    background:
-
-    radial-gradient(
-        circle,
-        rgba(0,122,255,.35),
-        transparent 70%
-    );
-
-    filter:blur(70px);
-
-    animation:pulse 8s infinite;
 
 }
 
@@ -147,15 +141,9 @@ body::before{
 
 .hero-content{
 
-    position:relative;
-
-    z-index:2;
-
-    animation:fade 1.5s ease;
+    animation:appear 1.5s ease;
 
 }
-
-
 
 
 
@@ -167,8 +155,6 @@ body::before{
 
     font-size:14px;
 
-    text-transform:uppercase;
-
 }
 
 
@@ -178,7 +164,7 @@ body::before{
 
     font-size:
 
-    clamp(100px,20vw,260px);
+    clamp(110px,22vw,280px);
 
 
     letter-spacing:-15px;
@@ -191,13 +177,14 @@ body::before{
 
     linear-gradient(
         white,
-        #8e8e93
+        #777
     );
 
 
     -webkit-background-clip:text;
 
     color:transparent;
+
 
 }
 
@@ -208,7 +195,8 @@ body::before{
 
     font-size:
 
-    clamp(45px,7vw,90px);
+    clamp(40px,7vw,90px);
+
 
     letter-spacing:-5px;
 
@@ -216,29 +204,19 @@ body::before{
 
 
 
-.subtitle{
+.typing{
 
     margin-top:35px;
 
-    font-size:24px;
+    color:#aaa;
 
-    color:#c7c7cc;
+    font-size:22px;
 
 }
 
 
 
-
-
-
-
-/* ==========================================
-   BUTTON
-========================================== */
-
-
 .button{
-
 
     display:inline-block;
 
@@ -258,16 +236,16 @@ body::before{
 
     transition:.4s;
 
-
 }
-
 
 
 .button:hover{
 
     transform:translateY(-8px);
 
-    background:#147ce5;
+    box-shadow:
+
+    0 20px 50px rgba(41,151,255,.4);
 
 }
 
@@ -278,7 +256,7 @@ body::before{
 
 
 /* ==========================================
-   SECTIONS
+   GENERAL
 ========================================== */
 
 
@@ -298,31 +276,29 @@ section{
 
     font-size:14px;
 
-    text-transform:uppercase;
-
 }
 
 
 
-section h2{
+h2{
 
     font-size:
 
-    clamp(50px,7vw,100px);
+    clamp(55px,8vw,110px);
 
     letter-spacing:-6px;
 
-    margin:35px 0;
+    margin:40px 0;
 
 }
 
 
 
-section p{
+p{
 
-    color:#c7c7cc;
+    color:#b5b5ba;
 
-    font-size:22px;
+    font-size:21px;
 
     line-height:1.7;
 
@@ -346,70 +322,26 @@ section p{
 
 
 
-.about p{
+.about-grid{
 
-    max-width:850px;
-
-    margin:auto;
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   DARK SECTIONS
-========================================== */
-
-
-.dark{
-
-    background:
-
-    radial-gradient(
-        circle at top,
-        #102b4b,
-        #050505 70%
-    );
-
-}
-
-
-
-
-
-
-
-/* ==========================================
-   CARDS GLASS APPLE
-========================================== */
-
-
-.cards{
+    margin-top:70px;
 
     display:grid;
 
-    grid-template-columns:
+    grid-template-columns:1fr 350px;
 
-    repeat(3,1fr);
+    gap:60px;
 
-
-    gap:35px;
-
-    margin-top:80px;
+    text-align:left;
 
 }
 
 
 
-.card{
+.glass{
 
 
-    padding:45px;
-
+    padding:40px;
 
     border-radius:35px;
 
@@ -427,41 +359,65 @@ section p{
     backdrop-filter:blur(25px);
 
 
-    transition:.5s;
+}
 
+
+
+.glass h3{
+
+    font-size:30px;
+
+    margin-bottom:30px;
 
 }
 
 
 
-.card:hover{
-
-
-    transform:translateY(-15px);
-
-
-    background:
-
-    rgba(255,255,255,.15);
-
-
-}
 
 
 
-.card h3{
+/* ==========================================
+   TIMELINE
+========================================== */
 
-    font-size:32px;
 
-    margin-bottom:20px;
+.line{
+
+    margin-top:80px;
+
+    border-left:
+
+    2px solid #2997ff;
+
+    padding-left:50px;
 
 }
 
 
 
-.card p{
+.event{
 
-    font-size:18px;
+    margin-bottom:70px;
+
+}
+
+
+
+.event span{
+
+    color:#2997ff;
+
+    letter-spacing:4px;
+
+}
+
+
+
+.event h3{
+
+    font-size:40px;
+
+    margin:15px 0;
 
 }
 
@@ -472,11 +428,12 @@ section p{
 
 
 /* ==========================================
-   IMAGE GALLERY
+   PROJECT CARDS
 ========================================== */
 
 
-.images{
+.cards{
+
 
     display:grid;
 
@@ -488,23 +445,124 @@ section p{
     gap:35px;
 
 
-    margin-top:80px;
+}
+
+
+
+.card{
+
+
+    overflow:hidden;
+
+
+    border-radius:35px;
+
+
+    background:
+
+    rgba(255,255,255,.08);
+
+
+    border:
+
+    1px solid rgba(255,255,255,.15);
+
+
+    backdrop-filter:blur(20px);
+
+
+    transition:.5s;
+
+
+}
+
+
+
+.card:hover{
+
+    transform:translateY(-15px);
+
+}
+
+
+
+.card img{
+
+
+    width:100%;
+
+
+    height:300px;
+
+
+    object-fit:cover;
+
+
+}
+
+
+
+.card div{
+
+    padding:35px;
+
+}
+
+
+
+.card h3{
+
+    font-size:32px;
+
+    margin-bottom:15px;
 
 }
 
 
 
 
-.image-box{
+
+
+
+/* ==========================================
+   GALLERY
+========================================== */
+
+
+.gallery-grid{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(3,1fr);
+
+
+    gap:30px;
+
+
+}
+
+
+
+.gallery-grid img{
+
+
+    width:100%;
+
+
+    height:400px;
+
+
+    object-fit:contain;
+
+
+    background:#000;
 
 
     border-radius:35px;
-
-
-    overflow:hidden;
-
-
-    background:#080808;
 
 
     border:
@@ -519,62 +577,79 @@ section p{
 
 
 
+.gallery-grid img:hover{
 
-.image-box:hover{
-
-    transform:translateY(-15px);
-
-}
-
-
-
-
-
-
-.image-box img{
-
-
-    width:100%;
-
-
-    height:350px;
-
-
-    object-fit:contain;
-
-
-    background:#000;
-
-
-    transition:.6s;
-
+    transform:scale(1.03);
 
 }
 
 
 
-.image-box:hover img{
 
 
-    transform:scale(1.04);
+
+/* ==========================================
+   SOCIAL
+========================================== */
+
+
+.social{
+
+    text-align:center;
 
 }
 
 
 
-.image-box p{
+.social-buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+}
 
 
-    padding:25px;
+
+.social-buttons a{
+
+
+    padding:18px 40px;
+
+
+    border-radius:50px;
+
+
+    background:
+
+    rgba(255,255,255,.08);
+
+
+    border:
+
+    1px solid rgba(255,255,255,.15);
 
 
     color:white;
 
 
-    font-size:18px;
+    text-decoration:none;
+
+
+    transition:.3s;
+
 
 }
 
+
+
+.social-buttons a:hover{
+
+    background:#2997ff;
+
+}
 
 
 
@@ -588,15 +663,11 @@ section p{
 
 footer{
 
-
-    padding:160px 20px;
-
-
     text-align:center;
 
+    padding:150px 20px;
 
     background:#000;
-
 
 }
 
@@ -604,57 +675,30 @@ footer{
 
 footer h2{
 
-
     font-size:
 
     clamp(120px,20vw,250px);
 
-
     letter-spacing:-15px;
 
-
 }
-
-
-
-footer p{
-
-    color:#888;
-
-}
-
-
-
-footer strong{
-
-
-    display:block;
-
-    margin-top:30px;
-
-    font-size:30px;
-
-}
-
-
 
 
 
 
 
 /* ==========================================
-   ANIMATIONS
+   ANIMATION
 ========================================== */
 
 
-@keyframes fade{
-
+@keyframes appear{
 
 from{
 
 opacity:0;
 
-transform:translateY(40px);
+transform:translateY(50px);
 
 }
 
@@ -671,28 +715,6 @@ transform:translateY(0);
 
 
 
-@keyframes pulse{
-
-
-0%,100%{
-
-transform:scale(1);
-
-}
-
-
-50%{
-
-transform:scale(1.15);
-
-}
-
-}
-
-
-
-
-
 
 
 /* ==========================================
@@ -703,6 +725,14 @@ transform:scale(1.15);
 @media(max-width:900px){
 
 
+.about-grid{
+
+grid-template-columns:1fr;
+
+}
+
+
+
 .cards{
 
 grid-template-columns:1fr;
@@ -711,7 +741,7 @@ grid-template-columns:1fr;
 
 
 
-.images{
+.gallery-grid{
 
 grid-template-columns:1fr;
 
@@ -719,19 +749,12 @@ grid-template-columns:1fr;
 
 
 
-.hero h1{
+.social-buttons{
 
-letter-spacing:-8px;
-
-}
-
-
-
-section{
-
-padding:90px 25px;
+flex-direction:column;
 
 }
+
 
 
 }
