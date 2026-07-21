@@ -1,35 +1,48 @@
 /* ==========================================
-   F4MYH - Mission Control V7
+   F4MYH - Mission Control V8
 ========================================== */
 
 
 /*
     LOCAL QRZ CONFIG
 
-    NE PAS METTRE SUR GITHUB
+    TEST LOCAL UNIQUEMENT
 
-    Les clés doivent normalement être
-    utilisées côté serveur.
+    NE PAS DEPLOYER SUR GITHUB
+
 */
+
 
 const QRZ_CONFIG = {
 
     stations: {
 
+
         "F4MYH": {
+
             callsign:"F4MYH",
+
             apiKey:"7A95-D46F-BA03-DF11"
+
         },
 
 
+
         "9A/F4MYH": {
+
             callsign:"9A/F4MYH",
+
             apiKey:"6998-8E54-7255-6607"
+
         }
+
 
     }
 
+
 };
+
+
 
 
 
@@ -54,7 +67,9 @@ const messages=[
 ];
 
 
+
 let messageIndex=0;
+
 let charIndex=0;
 
 
@@ -62,44 +77,61 @@ let charIndex=0;
 function typeWriter(){
 
 
-if(!typing)return;
+    if(!typing) return;
 
 
-if(charIndex < messages[messageIndex].length){
+
+    if(charIndex < messages[messageIndex].length){
 
 
-typing.textContent += messages[messageIndex][charIndex];
-
-charIndex++;
-
-setTimeout(typeWriter,55);
+        typing.textContent +=
+        messages[messageIndex][charIndex];
 
 
-}
-
-else{
+        charIndex++;
 
 
-setTimeout(()=>{
-
-typing.textContent="";
-
-charIndex=0;
-
-messageIndex++;
+        setTimeout(
+            typeWriter,
+            55
+        );
 
 
-if(messageIndex>=messages.length)
-messageIndex=0;
+    }
 
 
-typeWriter();
+    else{
 
 
-},1200);
+        setTimeout(()=>{
 
 
-}
+            typing.textContent="";
+
+
+            charIndex=0;
+
+
+            messageIndex++;
+
+
+
+            if(messageIndex>=messages.length){
+
+                messageIndex=0;
+
+            }
+
+
+
+            typeWriter();
+
+
+
+        },1200);
+
+
+    }
 
 
 }
@@ -108,8 +140,9 @@ typeWriter();
 
 if(typing){
 
-typing.textContent="";
-typeWriter();
+    typing.textContent="";
+
+    typeWriter();
 
 }
 
@@ -128,6 +161,7 @@ typeWriter();
 
 let map;
 
+
 let layers=[];
 
 
@@ -135,29 +169,51 @@ let qsoData=[];
 
 
 
+
+
+
+
+
 function initMap(){
 
 
-map=L.map("map")
-.setView(
-[45,10],
-3
-);
+    map=L.map("map")
+
+    .setView(
+
+        [45,10],
+
+        3
+
+    );
 
 
 
-L.tileLayer(
 
-"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
 
-{
+    L.tileLayer(
 
-attribution:
-"© OpenStreetMap © CARTO"
+    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
 
-}
+    {
 
-).addTo(map);
+        attribution:
+
+        "© OpenStreetMap © CARTO"
+
+    }
+
+
+    ).addTo(map);
+
+
+
+
+    setTimeout(()=>{
+
+        map.invalidateSize();
+
+    },500);
 
 
 }
@@ -171,14 +227,16 @@ attribution:
 function clearLayers(){
 
 
-layers.forEach(layer=>{
-
-map.removeLayer(layer);
-
-});
+    layers.forEach(layer=>{
 
 
-layers=[];
+        map.removeLayer(layer);
+
+
+    });
+
+
+    layers=[];
 
 
 }
@@ -193,198 +251,215 @@ function displayQSOs(station){
 
 
 
-clearLayers();
+    clearLayers();
 
 
 
-let qsos;
+    let qsos;
 
 
-if(station==="ALL"){
 
-qsos=qsoData;
+    if(station==="ALL"){
+
+
+        qsos=qsoData;
+
+
+    }
+
+
+    else{
+
+
+        qsos=qsoData.filter(
+
+            q=>q.station===station
+
+        );
+
+
+    }
+
+
+
+
+
+
+
+    qsos.forEach(qso=>{
+
+
+        let marker =
+
+        L.marker(
+
+
+        [
+
+            qso.lat,
+
+            qso.lon
+
+        ]
+
+        )
+
+
+        .addTo(map);
+
+
+
+
+
+        marker.bindPopup(`
+
+        <h3>
+
+        ${qso.call}
+
+        </h3>
+
+
+        Country :
+
+        ${qso.country}
+
+
+        <br>
+
+
+        Band :
+
+        ${qso.band}
+
+
+        <br>
+
+
+        Mode :
+
+        ${qso.mode}
+
+
+        <br>
+
+
+        Date :
+
+        ${qso.date}
+
+
+        `);
+
+
+
+
+
+
+        layers.push(marker);
+
+
+
+    });
+
+
+
+
+    updateStats(qsos);
+
+
 
 }
-
-else{
-
-qsos=qsoData.filter(
-q=>q.station===station
-);
-
-}
-
-
-
-
-qsos.forEach(qso=>{
-
-
-let marker=
-L.marker(
-
-[
-qso.lat,
-qso.lon
-]
-
-)
-
-.addTo(map);
-
-
-
-marker.bindPopup(`
-
-<h3>
-${qso.call}
-</h3>
-
-Country :
-${qso.country}
-
-<br>
-
-Band :
-${qso.band}
-
-<br>
-
-Mode :
-${qso.mode}
-
-<br>
-
-Date :
-${qso.date}
-
-<br>
-
-Distance :
-${qso.distance} km
-
-`);
-
-
-
-
-
-let line=
-L.polyline(
-
-[
-
-[
-qso.stationLat,
-qso.stationLon
-],
-
-[
-qso.lat,
-qso.lon
-]
-
-],
-
-{
-
-color:"#2997ff",
-
-weight:2
-
-}
-
-)
-
-.addTo(map);
-
-
-
-layers.push(marker,line);
-
-
-
-});
-
-
-
-updateStats(qsos);
-
-
-
-}
-
-
-
-
-
-
-
+/* ==========================================
+   UPDATE STATS
+========================================== */
 
 
 function updateStats(qsos){
 
 
-let qsoNumber =
-document.getElementById(
-"qso-number"
-);
-
-
-let countryNumber =
-document.getElementById(
-"country-number"
-);
-
-
-let dxNumber =
-document.getElementById(
-"dx-number"
-);
+    let qsoNumber =
+    document.getElementById(
+        "qso-number"
+    );
 
 
 
+    let countryNumber =
+    document.getElementById(
+        "country-number"
+    );
 
 
-if(qsoNumber)
-qsoNumber.textContent=qsos.length;
+
+    let dxNumber =
+    document.getElementById(
+        "dx-number"
+    );
 
 
 
 
-if(countryNumber){
+    if(qsoNumber){
 
-let countries=
-new Set(
-qsos.map(q=>q.country)
-);
+        qsoNumber.textContent =
+        qsos.length;
 
-countryNumber.textContent=
-countries.size;
-
-}
+    }
 
 
 
 
 
-if(dxNumber){
-
-let max=0;
+    if(countryNumber){
 
 
-qsos.forEach(q=>{
+        let countries =
+        new Set(
 
-if(q.distance>max)
-max=q.distance;
+            qsos.map(
+                q=>q.country
+            )
 
-});
+        );
 
 
-dxNumber.textContent=
-max+" km";
+        countryNumber.textContent =
+        countries.size;
 
-}
+
+    }
+
+
+
+
+
+    if(dxNumber){
+
+
+        let max=0;
+
+
+        qsos.forEach(q=>{
+
+
+            if(q.distance > max){
+
+                max=q.distance;
+
+            }
+
+
+        });
+
+
+
+        dxNumber.textContent =
+        max+" km";
+
+
+    }
+
 
 
 }
@@ -398,38 +473,280 @@ max+" km";
 
 
 /* ==========================================
-   LOAD LOCAL DATA
+   QRZ API LOCAL
 ========================================== */
 
 
-fetch("qso-data.json")
-
-.then(response=>response.json())
-
-.then(data=>{
+async function loadQRZQSOs(station){
 
 
-qsoData=data;
+
+    const config =
+    QRZ_CONFIG.stations[station];
 
 
-initMap();
+
+    if(!config){
+
+        console.error(
+            "Station inconnue"
+        );
+
+        return;
+
+    }
 
 
-displayQSOs("F4MYH");
 
 
-})
 
-.catch(error=>{
+    const url =
 
-
-console.error(
-"QSO data error:",
-error
-);
+    `https://logbook.qrz.com/api?KEY=${config.apiKey}&ACTION=FETCH`;
 
 
-});
+
+
+
+    try{
+
+
+        const response =
+
+        await fetch(url);
+
+
+
+        const text =
+
+        await response.text();
+
+
+
+
+
+        console.log(
+            "QRZ RESPONSE",
+            text
+        );
+
+
+
+
+
+        const parser =
+
+        new DOMParser();
+
+
+
+
+
+        const xml =
+
+        parser.parseFromString(
+
+            text,
+
+            "text/xml"
+
+        );
+
+
+
+
+
+        const entries =
+
+        xml.getElementsByTagName(
+            "CALL"
+        );
+
+
+
+
+
+        qsoData=[];
+
+
+
+
+
+        for(let i=0;i<entries.length;i++){
+
+
+
+            let record =
+
+            entries[i].parentNode;
+
+
+
+
+
+            qsoData.push({
+
+
+
+                station:station,
+
+
+
+                call:
+
+                record
+                .getElementsByTagName("CALL")[0]
+                ?.textContent || "",
+
+
+
+
+                country:
+
+                record
+                .getElementsByTagName("COUNTRY")[0]
+                ?.textContent || "Unknown",
+
+
+
+
+                band:
+
+                record
+                .getElementsByTagName("BAND")[0]
+                ?.textContent || "",
+
+
+
+
+                mode:
+
+                record
+                .getElementsByTagName("MODE")[0]
+                ?.textContent || "",
+
+
+
+
+                date:
+
+                record
+                .getElementsByTagName("QSO_DATE")[0]
+                ?.textContent || "",
+
+
+
+
+                lat:
+
+                parseFloat(
+
+                record
+                .getElementsByTagName("LAT")[0]
+                ?.textContent
+
+                ) || 0,
+
+
+
+
+                lon:
+
+                parseFloat(
+
+                record
+                .getElementsByTagName("LON")[0]
+                ?.textContent
+
+                ) || 0,
+
+
+
+
+                distance:0,
+
+
+
+
+                stationLat:45,
+
+                stationLon:3
+
+
+
+            });
+
+
+
+        }
+
+
+
+
+
+        console.log(
+
+            "QSOs chargés :",
+
+            qsoData.length
+
+        );
+
+
+
+
+
+        displayQSOs(station);
+
+
+
+    }
+
+
+
+    catch(error){
+
+
+        console.error(
+
+            "QRZ API ERROR",
+
+            error
+
+        );
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   START SYSTEM
+========================================== */
+
+
+if(document.getElementById("map")){
+
+
+    initMap();
+
+
+    loadQRZQSOs(
+        "F4MYH"
+    );
+
+
+}
 
 
 
@@ -445,38 +762,152 @@ error
 
 
 document
+
 .querySelectorAll(".station-btn")
+
 .forEach(button=>{
 
 
-button.addEventListener(
 
-"click",
+    button.addEventListener(
 
-()=>{
+    "click",
+
+    ()=>{
+
+
+
+
+
+        document
+
+        .querySelectorAll(".station-btn")
+
+        .forEach(btn=>{
+
+
+            btn.classList.remove(
+                "active"
+            );
+
+
+        });
+
+
+
+
+
+
+        button.classList.add(
+            "active"
+        );
+
+
+
+
+
+
+        if(button.dataset.station==="ALL"){
+
+
+            loadQRZQSOs(
+                "F4MYH"
+            );
+
+
+        }
+
+
+        else{
+
+
+            loadQRZQSOs(
+
+                button.dataset.station
+
+            );
+
+
+        }
+
+
+
+
+    });
+
+
+
+});
+
+
+
+
+
+
+
+/* ==========================================
+   IMAGE LAZY LOAD
+========================================== */
 
 
 document
-.querySelectorAll(".station-btn")
-.forEach(btn=>
-btn.classList.remove("active")
-);
+
+.querySelectorAll("img")
+
+.forEach(img=>{
+
+
+    img.loading="lazy";
+
+
+});
 
 
 
-button.classList.add("active");
 
 
 
-displayQSOs(
-button.dataset.station
-);
+
+
+/* ==========================================
+   BUTTON PRESS EFFECT
+========================================== */
+
+
+document
+
+.querySelectorAll("a")
+
+.forEach(button=>{
 
 
 
-}
+    button.addEventListener(
 
-);
+    "mousedown",
+
+    ()=>{
+
+
+        button.style.scale=".96";
+
+
+    });
+
+
+
+    button.addEventListener(
+
+    "mouseup",
+
+    ()=>{
+
+
+        button.style.scale="1";
+
+
+    });
+
 
 
 });
