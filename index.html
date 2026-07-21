@@ -7,20 +7,30 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>F4MYH | Amateur Radio Station</title>
+
+<title>
+F4MYH | Amateur Radio Station
+</title>
+
 
 <link rel="stylesheet" href="style.css">
 
-<!-- Leaflet QSO Map -->
+
+<!-- Leaflet Map -->
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 
+
 </head>
+
 
 
 <body>
 
 
 <div id="stars"></div>
+
+
 
 
 
@@ -60,6 +70,7 @@ Enter Station
 </a>
 
 
+
 </div>
 
 
@@ -92,7 +103,9 @@ My Radio Journey
 
 
 
+
 <div class="about-grid">
+
 
 
 <div>
@@ -136,6 +149,12 @@ Station Status
 
 <p>
 🛰 Satellite Reception
+</p>
+
+
+
+<p>
+🌍 DX Communication
 </p>
 
 
@@ -189,6 +208,7 @@ Remote Ham Radio
 
 
 
+
 <p>
 I am also using <strong>RemoteHamRadio (RHR)</strong>
 to expand my operating experience and improve my skills
@@ -205,7 +225,6 @@ stations located in low-noise environments, allowing me to:
 
 
 
-
 <ul>
 
 
@@ -214,21 +233,18 @@ Operate on multiple HF bands under excellent conditions
 </li>
 
 
-
 <li>
-Improve my pile-up handling and DX operating skills
+Improve DX and pile-up handling
 </li>
 
 
-
 <li>
-Gain experience with different station setups and antennas
+Experiment with different antennas
 </li>
 
 
-
 <li>
-Make contacts that would be difficult from my home QTH
+Discover new operating techniques
 </li>
 
 
@@ -238,10 +254,9 @@ Make contacts that would be difficult from my home QTH
 
 
 <p>
-This is a great complement to my personal station and helps
-me progress faster in the hobby.
+This complements my personal station and helps me progress
+in amateur radio.
 </p>
-
 
 
 
@@ -271,7 +286,9 @@ Evolution
 
 
 
+
 <div class="line">
+
 
 
 <div class="event">
@@ -374,8 +391,9 @@ HF operation from Northern Europe.
 
 
 <p class="label">
-04 — QSO MAP
+04 — QSO NETWORK
 </p>
+
 
 
 
@@ -391,19 +409,29 @@ Global Contacts
 
 
 <button class="station-btn active" data-station="F4MYH">
+
 F4MYH 🇫🇷
+
 </button>
+
+
 
 
 
 <button class="station-btn" data-station="9A/F4MYH">
+
 9A/F4MYH 🇭🇷
+
 </button>
 
 
 
+
+
 <button class="station-btn" data-station="ALL">
-ALL STATIONS 🌍
+
+ALL 🌍
+
 </button>
 
 
@@ -414,7 +442,15 @@ ALL STATIONS 🌍
 
 
 
+
+<div class="map-container">
+
+
 <div id="map"></div>
+
+
+</div>
+
 
 
 
@@ -423,51 +459,64 @@ ALL STATIONS 🌍
 <div class="qso-stats">
 
 
+
 <div class="glass">
+
 
 <h3 id="qso-number">
 0
 </h3>
 
+
 <p>
 QSO
 </p>
+
 
 </div>
 
 
 
 
+
 <div class="glass">
+
 
 <h3 id="country-number">
 0
 </h3>
 
+
 <p>
-Countries
+DXCC
 </p>
 
+
 </div>
+
 
 
 
 
 <div class="glass">
 
+
 <h3 id="dx-number">
 0 km
 </h3>
+
 
 <p>
 Longest DX
 </p>
 
-</div>
-
-
 
 </div>
+
+
+
+</div>
+
 
 
 
@@ -497,7 +546,6 @@ Longest DX
 <h2>
 Engineering Projects
 </h2>
-
 
 
 
@@ -534,7 +582,6 @@ Design and construction of a satellite reception antenna.
 </div>
 
 
-
 </div>
 
 
@@ -547,7 +594,7 @@ Design and construction of a satellite reception antenna.
 <div class="card">
 
 
-<img src="meteor.jpg" alt="METEOR Satellite">
+<img src="meteor.jpg" alt="Meteor Satellite">
 
 
 
@@ -569,7 +616,6 @@ Receiving images directly from space.
 </div>
 
 
-
 </div>
 
 
@@ -582,7 +628,7 @@ Receiving images directly from space.
 <div class="card">
 
 
-<img src="finland.jpg" alt="OH F4MYH Finland">
+<img src="finland.jpg" alt="Finland Operation">
 
 
 
@@ -604,9 +650,7 @@ HF operation from Northern Europe.
 </div>
 
 
-
 </div>
-
 
 
 
@@ -641,13 +685,17 @@ Station Archive
 <div class="gallery-grid">
 
 
-<img src="qfh-build-2.jpg" alt="QFH build">
+<img src="qfh-build-2.jpg" alt="QFH construction">
+
 
 <img src="setup.jpg" alt="Radio setup">
 
-<img src="IMG_6353-preview.jpg" alt="Station photo">
 
-<img src="qfh-build-1.jpg" alt="QFH construction">
+<img src="IMG_6353-preview.jpg" alt="Station">
+
+
+<img src="qfh-build-1.jpg" alt="Antenna build">
+
 
 <img src="base.jpg" alt="Base station">
 
@@ -667,7 +715,7 @@ Station Archive
 
 
 
-<!-- SOCIAL -->
+<!-- CONTACT -->
 
 
 <section class="social">
@@ -688,7 +736,6 @@ Stay Connected
 
 
 
-
 <div class="social-buttons">
 
 
@@ -699,6 +746,7 @@ target="_blank">
 Instagram
 
 </a>
+
 
 
 
@@ -752,13 +800,16 @@ F4MYH
 
 
 
+
 <!-- LEAFLET -->
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 
 
-<!-- MAIN JAVASCRIPT -->
+
+
+<!-- MAIN SCRIPT -->
 
 <script src="script.js"></script>
 
@@ -767,13 +818,17 @@ F4MYH
 
 
 
-<!-- Cloudflare Web Analytics -->
+
+<!-- CLOUDFLARE WEB ANALYTICS -->
+
 
 <script 
-type="module" 
-src="https://static.cloudflareinsights.com/beacon.min.js" 
+type="module"
+src="https://static.cloudflareinsights.com/beacon.min.js"
 data-cf-beacon='{"token":"04c7bd7cb542414584e60411135bc99b"}'>
 </script>
+
+
 
 
 
