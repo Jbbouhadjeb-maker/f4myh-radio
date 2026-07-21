@@ -992,7 +992,6 @@ startSystem();
 
 
 
-
 /* ==========================================
    STATION BUTTONS
 ========================================== */
@@ -1024,21 +1023,28 @@ document
 
 
 
-
-
             button.classList.add(
                 "active"
             );
 
 
 
+            if(button.dataset.station==="ALL"){
 
-            loadQRZQSOs(
 
-                button.dataset.station
+                loadQRZQSOs("F4MYH");
 
-            );
 
+            }
+            else{
+
+
+                loadQRZQSOs(
+                    button.dataset.station
+                );
+
+
+            }
 
 
         }
@@ -1047,8 +1053,6 @@ document
 
 
 });
-
-
 
 
 
