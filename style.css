@@ -1,6 +1,6 @@
 /* ==========================================
-   F4MYH - Mission Control V6
-   Apple / Space / Engineering
+   F4MYH - Amateur Radio Station
+   Apple / Space / Engineering Design
 ========================================== */
 
 
@@ -29,6 +29,7 @@ body{
     Arial,
     sans-serif;
 
+
     background:#050505;
 
     color:white;
@@ -36,6 +37,9 @@ body{
     overflow-x:hidden;
 
 }
+
+
+
 
 
 
@@ -58,18 +62,25 @@ body::before{
     background:
 
     radial-gradient(
-        circle at 50% 10%,
+        circle at 50% 15%,
         rgba(41,151,255,.35),
-        transparent 40%
+        transparent 35%
+    ),
+
+    radial-gradient(
+        circle at 80% 80%,
+        rgba(0,122,255,.18),
+        transparent 35%
     ),
 
     linear-gradient(
-        180deg,
         #050505,
         #020409
     );
 
 }
+
+
 
 
 
@@ -92,30 +103,7 @@ body::before{
 
     background-size:90px 90px;
 
-
-    opacity:.08;
-
-
-    animation:
-    starsMove 180s linear infinite;
-
-}
-
-
-
-@keyframes starsMove{
-
-from{
-
-transform:translateY(0);
-
-}
-
-to{
-
-transform:translateY(-500px);
-
-}
+    opacity:.12;
 
 }
 
@@ -148,11 +136,9 @@ transform:translateY(-500px);
 
 .hero-content{
 
-    animation:
-    appear 1.2s ease;
+    animation:appear 1.2s ease;
 
 }
-
 
 
 
@@ -180,7 +166,6 @@ transform:translateY(-500px);
     letter-spacing:-15px;
 
 
-
     margin:30px 0;
 
 
@@ -205,15 +190,12 @@ transform:translateY(-500px);
 
 .hero h2{
 
-
     font-size:
 
     clamp(40px,7vw,90px);
 
 
-
     letter-spacing:-5px;
-
 
 }
 
@@ -221,15 +203,11 @@ transform:translateY(-500px);
 
 .typing{
 
-
     margin-top:35px;
-
 
     color:#c7c7cc;
 
-
     font-size:22px;
-
 
 }
 
@@ -259,21 +237,16 @@ transform:translateY(-500px);
     border-radius:50px;
 
 
-
     background:#2997ff;
-
 
 
     color:white !important;
 
 
-
     text-decoration:none !important;
 
 
-
     font-weight:600;
-
 
 
     transition:.3s;
@@ -285,17 +258,15 @@ transform:translateY(-500px);
 
 .button:hover{
 
-
     transform:translateY(-5px);
 
 
     box-shadow:
-
     0 15px 40px
     rgba(41,151,255,.35);
 
-
 }
+
 
 
 
@@ -318,15 +289,11 @@ section{
 
 .label{
 
-
     color:#2997ff;
-
 
     letter-spacing:7px;
 
-
     font-size:14px;
-
 
 }
 
@@ -334,19 +301,15 @@ section{
 
 h2{
 
-
     font-size:
 
     clamp(55px,8vw,110px);
 
 
-
     letter-spacing:-6px;
 
 
-
     margin:40px 0;
-
 
 }
 
@@ -354,17 +317,14 @@ h2{
 
 p{
 
-
     color:#c7c7cc;
-
 
     font-size:21px;
 
-
     line-height:1.7;
 
-
 }
+
 
 
 
@@ -386,25 +346,18 @@ p{
 
 .about-grid{
 
-
     margin-top:70px;
-
 
     display:grid;
 
-
-    grid-template-columns:
-
-    1fr 350px;
-
+    grid-template-columns:1fr 350px;
 
     gap:60px;
 
-
     text-align:left;
 
-
 }
+
 
 
 
@@ -418,9 +371,7 @@ p{
 
 .glass{
 
-
     padding:40px;
-
 
     border-radius:35px;
 
@@ -430,15 +381,12 @@ p{
     rgba(255,255,255,.08);
 
 
-
     border:
 
     1px solid rgba(255,255,255,.15);
 
 
-
-    backdrop-filter:blur(15px);
-
+    backdrop-filter:blur(20px);
 
 }
 
@@ -446,16 +394,20 @@ p{
 
 .glass h3{
 
-
     font-size:32px;
-
 
     margin-bottom:25px;
 
-
 }
+
+
+
+
+
+
+
 /* ==========================================
-   RHR - REMOTE HAM RADIO
+   RHR
 ========================================== */
 
 
@@ -532,9 +484,7 @@ p{
 
     margin-top:80px;
 
-    border-left:
-
-    2px solid #2997ff;
+    border-left:2px solid #2997ff;
 
     padding-left:50px;
 
@@ -575,7 +525,7 @@ p{
 
 
 /* ==========================================
-   PROJECT CARDS
+   PROJECTS
 ========================================== */
 
 
@@ -584,7 +534,6 @@ p{
     display:grid;
 
     grid-template-columns:
-
     repeat(3,1fr);
 
     gap:35px;
@@ -605,32 +554,10 @@ p{
     rgba(255,255,255,.08);
 
 
-
     border:
 
     1px solid rgba(255,255,255,.15);
 
-
-
-    backdrop-filter:blur(15px);
-
-
-
-    transition:.3s;
-
-}
-
-
-
-.card:hover{
-
-    transform:translateY(-8px);
-
-
-    box-shadow:
-
-    0 20px 50px
-    rgba(41,151,255,.2);
 
 }
 
@@ -662,8 +589,6 @@ p{
 
     font-size:32px;
 
-    margin-bottom:15px;
-
 }
 
 
@@ -673,7 +598,7 @@ p{
 
 
 /* ==========================================
-   GALLERY FIX
+   GALLERY
 ========================================== */
 
 
@@ -693,13 +618,13 @@ p{
 
 .gallery-grid img{
 
-    width:100% !important;
 
-    height:350px !important;
+    width:100%;
 
-    object-fit:contain !important;
+    height:350px;
 
-    display:block;
+
+    object-fit:contain;
 
 
     background:#000;
@@ -713,15 +638,8 @@ p{
     1px solid rgba(255,255,255,.15);
 
 
-    transition:.3s;
+    display:block;
 
-}
-
-
-
-.gallery-grid img:hover{
-
-    transform:scale(1.02);
 
 }
 
@@ -732,7 +650,7 @@ p{
 
 
 /* ==========================================
-   SOCIAL BUTTONS FIX
+   SOCIAL
 ========================================== */
 
 
@@ -756,32 +674,18 @@ p{
 
 
 
-.social-buttons a,
-.social-buttons a:visited{
-
-
-    display:inline-flex;
-
-
-    align-items:center;
-
-
-    justify-content:center;
-
+.social-buttons a{
 
 
     padding:18px 45px;
 
 
-
     border-radius:50px;
-
 
 
     background:
 
     rgba(255,255,255,.08);
-
 
 
     border:
@@ -793,20 +697,16 @@ p{
     color:white !important;
 
 
-
     text-decoration:none !important;
-
 
 
     font-size:18px;
 
 
-
     font-weight:600;
 
 
-
-    transition:.3s;
+    display:inline-block;
 
 
 }
@@ -817,16 +717,6 @@ p{
 
 
     background:#2997ff;
-
-
-    transform:translateY(-5px);
-
-
-
-    box-shadow:
-
-    0 15px 40px
-    rgba(41,151,255,.35);
 
 
 }
@@ -846,9 +736,7 @@ footer{
 
     text-align:center;
 
-
     padding:150px 20px;
-
 
     background:#000;
 
@@ -862,7 +750,6 @@ footer h2{
     font-size:
 
     clamp(100px,20vw,250px);
-
 
 
     letter-spacing:-15px;
@@ -891,24 +778,22 @@ footer p{
 
 @keyframes appear{
 
-
 from{
 
-    opacity:0;
+opacity:0;
 
-    transform:translateY(40px);
+transform:translateY(40px);
 
 }
 
 
 to{
 
-    opacity:1;
+opacity:1;
 
-    transform:translateY(0);
+transform:translateY(0);
 
 }
-
 
 }
 
@@ -963,15 +848,6 @@ section{
     padding:90px 25px;
 
 }
-
-
-
-.rhr .glass{
-
-    padding:25px;
-
-}
-
 
 
 }
