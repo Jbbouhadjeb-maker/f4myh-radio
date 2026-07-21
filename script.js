@@ -1,6 +1,6 @@
 /* ==========================================
    F4MYH - Mission Control V11
-   ADIF + Leaflet + Worldwide Callsign Lookup
+   ADIF + Leaflet + Smart Callsign Locator
 ========================================== */
 
 
@@ -8,26 +8,24 @@
    STATION CONFIG
 ========================================== */
 
+
 const STATION_CONFIG = {
 
 
     "9A/F4MYH": {
 
-
         callsign:"9A/F4MYH",
 
+        country:"Croatia",
 
         lat:43.5081,
 
-
         lon:16.4402
-
 
     }
 
 
 };
-
 
 
 
@@ -40,16 +38,11 @@ const STATION_CONFIG = {
 
 let map;
 
-
 let layers=[];
-
 
 let qsoData=[];
 
-
 let callsignDB={};
-
-
 
 
 
@@ -65,35 +58,24 @@ let callsignDB={};
 const typing=document.querySelector(".typing");
 
 
-
 const messages=[
-
 
     "Initializing station...",
 
-
     "Loading antennas...",
 
+    "Connecting satellites...",
 
-    "Scanning logbook...",
-
-
-    "Mapping QSOs...",
-
+    "Scanning HF bands...",
 
     "System online ✓"
-
 
 ];
 
 
-
 let messageIndex=0;
 
-
 let charIndex=0;
-
-
 
 
 
@@ -113,9 +95,7 @@ function typeWriter(){
         messages[messageIndex][charIndex];
 
 
-
         charIndex++;
-
 
 
         setTimeout(
@@ -141,9 +121,7 @@ function typeWriter(){
             charIndex=0;
 
 
-
             messageIndex++;
-
 
 
             if(messageIndex>=messages.length)
@@ -153,7 +131,6 @@ function typeWriter(){
 
 
             typeWriter();
-
 
 
         },1200);
@@ -166,16 +143,11 @@ function typeWriter(){
 
 
 
-
-
 if(typing){
-
 
     typing.textContent="";
 
-
     typeWriter();
-
 
 }
 
@@ -186,9 +158,8 @@ if(typing){
 
 
 
-
 /* ==========================================
-   LOAD LOCAL CALLSIGN DATABASE
+   LOAD LOCAL DATABASE
 ========================================== */
 
 
@@ -199,13 +170,11 @@ async function loadCallsignDatabase(){
 
 
         const response =
-
         await fetch("./callsigns.json");
 
 
 
         callsignDB =
-
         await response.json();
 
 
@@ -225,13 +194,14 @@ async function loadCallsignDatabase(){
     catch(error){
 
 
-        console.error(
+        console.log(
 
-            "Callsign database error",
-
-            error
+            "No local database"
 
         );
+
+
+        callsignDB={};
 
 
     }
@@ -246,6 +216,522 @@ async function loadCallsignDatabase(){
 
 
 
+/* ==========================================
+   PREFIX DATABASE
+========================================== */
+
+
+const PREFIX_DATABASE = {
+
+
+/* Europe */
+
+
+"F": ["France",46.6,2.2],
+
+"DL": ["Germany",51,10],
+
+"DA": ["Germany",51,10],
+
+"DB": ["Germany",51,10],
+
+"DC": ["Germany",51,10],
+
+"DD": ["Germany",51,10],
+
+"DE": ["Germany",51,10],
+
+"DF": ["Germany",51,10],
+
+"DG": ["Germany",51,10],
+
+"DH": ["Germany",51,10],
+
+"DJ": ["Germany",51,10],
+
+"DK": ["Germany",51,10],
+
+"DM": ["Germany",51,10],
+
+
+"EA": ["Spain",40,-4],
+
+"EB": ["Spain",40,-4],
+
+
+"CT": ["Portugal",39,-8],
+
+
+"EI": ["Ireland",53,-8],
+
+
+"G": ["United Kingdom",54,-2],
+
+"M": ["United Kingdom",54,-2],
+
+"MW": ["Wales",52,-3],
+
+
+"ON": ["Belgium",50.8,4.3],
+
+"PA": ["Netherlands",52.1,5.3],
+
+
+"HB": ["Switzerland",46.8,8.2],
+
+"HB0": ["Liechtenstein",47.1,9.5],
+
+
+"I": ["Italy",42.8,12.5],
+
+
+"OE": ["Austria",47.5,14.5],
+
+
+"OK": ["Czech Republic",49.8,15.5],
+
+"OM": ["Slovakia",48.7,19.5],
+
+
+"SP": ["Poland",52,19],
+
+"SQ": ["Poland",52,19],
+
+
+"SM": ["Sweden",60,18],
+
+
+"OH": ["Finland",64,26],
+
+
+"LA": ["Norway",61,8],
+
+
+"OZ": ["Denmark",56,10],
+
+
+"UA": ["Russia",55,37],
+
+"RA": ["Russia",55,37],
+
+"RK": ["Russia",55,37],
+
+
+"UR": ["Ukraine",49,32],
+
+"UT": ["Ukraine",49,32],
+
+
+"EU": ["Belarus",53.7,27.9],
+
+
+"LY": ["Lithuania",55.2,23.8],
+
+"ES": ["Estonia",58.6,25],
+
+
+"YU": ["Serbia",44,21],
+
+"Z3": ["North Macedonia",41.6,21.7],
+
+
+"9A": ["Croatia",45.1,15.2],
+
+"E7": ["Bosnia",44,17],
+
+
+"S5": ["Slovenia",46.1,14.9],
+
+
+/* ==========================================
+   PREFIX DATABASE (SUITE)
+========================================== */
+
+
+/* Amérique du Nord */
+
+
+"K": ["United States",39,-98],
+
+"N": ["United States",39,-98],
+
+"W": ["United States",39,-98],
+
+"AA": ["United States",39,-98],
+
+"AB": ["United States",39,-98],
+
+"AC": ["United States",39,-98],
+
+"AD": ["United States",39,-98],
+
+"AE": ["United States",39,-98],
+
+"AF": ["United States",39,-98],
+
+"AG": ["United States",39,-98],
+
+
+"VE": ["Canada",56,-106],
+
+"VA": ["Canada",56,-106],
+
+"VO": ["Canada",56,-106],
+
+"VY": ["Canada",56,-106],
+
+
+"XE": ["Mexico",23,-102],
+
+"XA": ["Mexico",23,-102],
+
+
+"6Y": ["Jamaica",18.1,-77.3],
+
+
+"KP4": ["Puerto Rico",18.2,-66.5],
+
+
+"FG": ["Guadeloupe",16.2,-61.5],
+
+
+"FM": ["Martinique",14.6,-61],
+
+
+"PJ": ["Caribbean Netherlands",12.1,-68.9],
+
+
+
+
+/* Amérique du Sud */
+
+
+"PY": ["Brazil",-10,-55],
+
+"PP": ["Brazil",-10,-55],
+
+
+"LU": ["Argentina",-34,-64],
+
+
+"CX": ["Uruguay",-32,-56],
+
+
+"CE": ["Chile",-30,-71],
+
+
+"HK": ["Colombia",4,-72],
+
+
+"HC": ["Ecuador",-1,-78],
+
+
+"OA": ["Peru",-9,-75],
+
+
+"YV": ["Venezuela",8,-66],
+
+
+
+
+/* Afrique */
+
+
+"ZS": ["South Africa",-30,25],
+
+"ZR": ["South Africa",-30,25],
+
+"ZT": ["South Africa",-30,25],
+
+
+"CN": ["Morocco",31,-7],
+
+
+"EA8": ["Canary Islands",28,-17],
+
+
+"5H": ["Tanzania",-6,35],
+
+
+"7X": ["Algeria",28,2],
+
+
+"SU": ["Egypt",27,30],
+
+
+"9G": ["Ghana",7,-1],
+
+
+"5N": ["Nigeria",9,8],
+
+
+"TY": ["Benin",9,2],
+
+
+
+
+/* Asie */
+
+
+"JA": ["Japan",36,138],
+
+"JE": ["Japan",36,138],
+
+"JF": ["Japan",36,138],
+
+"JG": ["Japan",36,138],
+
+"JH": ["Japan",36,138],
+
+"JI": ["Japan",36,138],
+
+"JJ": ["Japan",36,138],
+
+"JK": ["Japan",36,138],
+
+
+"HL": ["South Korea",37,127],
+
+
+"BY": ["China",35,103],
+
+"BG": ["China",35,103],
+
+
+"BV": ["Taiwan",23.7,121],
+
+
+"VU": ["India",21,78],
+
+
+"HS": ["Thailand",15,101],
+
+
+"9M": ["Malaysia",4,102],
+
+
+"YB": ["Indonesia",-2,118],
+
+
+"DU": ["Philippines",13,122],
+
+
+"4Z": ["Israel",31,35],
+
+
+"A6": ["United Arab Emirates",24,54],
+
+
+
+
+/* Océanie */
+
+
+"VK": ["Australia",-25,133],
+
+"ZL": ["New Zealand",-41,174],
+
+
+"FK": ["New Caledonia",-21,165],
+
+
+"KH": ["United States Pacific",19,-155],
+
+
+"NH": ["United States Pacific",19,-155],
+
+
+"V7": ["Marshall Islands",7,171],
+
+
+"9V": ["Singapore",1.3,103.8]
+
+
+
+};
+
+
+
+
+
+
+
+
+/* ==========================================
+   NORMALIZE CALLSIGN
+========================================== */
+
+
+function normalizeCall(call){
+
+
+    return call
+
+    .toUpperCase()
+
+    .replace(/\/P$/,"")
+
+    .replace(/\/M$/,"")
+
+    .replace(/\/MM$/,"")
+
+    .replace(/\/AM$/,"")
+
+    .trim();
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   GET PREFIX
+========================================== */
+
+
+function getPrefix(call){
+
+
+    call = normalizeCall(call);
+
+
+
+    // Exemple :
+    // F4MYH -> F
+    // DL1ABC -> DL
+    // 9A5E -> 9A
+
+
+    for(const prefix of Object.keys(PREFIX_DATABASE)
+        .sort((a,b)=>b.length-a.length)){
+
+
+        if(call.startsWith(prefix)){
+
+
+            return prefix;
+
+
+        }
+
+
+    }
+
+
+
+    return null;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   GET CALLSIGN POSITION
+========================================== */
+
+
+async function getCallsignCoordinates(call){
+
+
+    call = normalizeCall(call);
+
+
+
+    // Base locale en priorité
+
+    if(callsignDB[call]){
+
+
+        return callsignDB[call];
+
+
+    }
+
+
+
+
+
+
+    const prefix = getPrefix(call);
+
+
+
+
+    if(prefix){
+
+
+        const data =
+        PREFIX_DATABASE[prefix];
+
+
+
+        const coords={
+
+
+            country:data[0],
+
+
+            lat:data[1],
+
+
+            lon:data[2]
+
+
+        };
+
+
+
+        callsignDB[call]=coords;
+
+
+
+        console.log(
+
+            "Prefix location",
+
+            call,
+
+            coords
+
+        );
+
+
+
+        return coords;
+
+
+    }
+
+
+
+
+    console.warn(
+
+        "Coordonnées manquantes:",
+
+        call
+
+    );
+
+
+
+    return null;
+
+
+}
 
 /* ==========================================
    MAP INIT
@@ -267,32 +753,24 @@ function initMap(){
 
 
 
-
     L.tileLayer(
 
         "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
 
         {
 
-
             attribution:
-
             "© OpenStreetMap © CARTO"
 
-
         }
-
 
     ).addTo(map);
 
 
 
-
     setTimeout(()=>{
 
-
         map.invalidateSize();
-
 
     },500);
 
@@ -339,7 +817,7 @@ function clearLayers(){
 
 
 /* ==========================================
-   DISTANCE CALCULATOR
+   DISTANCE CALCULATION
 ========================================== */
 
 
@@ -359,41 +837,28 @@ lon2
     const R=6371;
 
 
-
     const dLat =
-
     (lat2-lat1)
-
     *
-
     Math.PI/180;
 
 
-
     const dLon =
-
     (lon2-lon1)
-
     *
-
     Math.PI/180;
 
 
 
     const a =
 
-
     Math.sin(dLat/2)
 
     *
 
     Math.sin(dLat/2)
 
-
-
     +
-
-
 
     Math.cos(lat1*Math.PI/180)
 
@@ -411,10 +876,7 @@ lon2
 
 
 
-
-
     return Math.round(
-
 
         R *
 
@@ -428,295 +890,10 @@ lon2
 
         )
 
-
     );
 
 
 }
-/* ==========================================
-   WORLDWIDE CALLSIGN PREFIX DATABASE
-========================================== */
-
-
-const PREFIX_COUNTRIES = {
-
-
-    "F":"France",
-
-    "TM":"France",
-
-    "FG":"Guadeloupe",
-
-    "FH":"Mayotte",
-
-    "FK":"New Caledonia",
-
-    "FP":"Saint Pierre",
-
-    "FR":"Réunion",
-
-    "FS":"Saint Martin",
-
-    "FY":"French Guiana",
-
-
-
-    "9A":"Croatia",
-
-    "S5":"Slovenia",
-
-    "E7":"Bosnia",
-
-    "9H":"Malta",
-
-    "I":"Italy",
-
-    "IK":"Italy",
-
-    "IZ":"Italy",
-
-    "IS":"Sardinia",
-
-    "IT9":"Sicily",
-
-
-    "DL":"Germany",
-
-    "DA":"Germany",
-
-    "DB":"Germany",
-
-    "DC":"Germany",
-
-    "DD":"Germany",
-
-    "DF":"Germany",
-
-    "DG":"Germany",
-
-    "DH":"Germany",
-
-    "DJ":"Germany",
-
-    "DK":"Germany",
-
-    "DM":"Germany",
-
-
-    "G":"United Kingdom",
-
-    "GM":"Scotland",
-
-    "GW":"Wales",
-
-    "GI":"Northern Ireland",
-
-    "M":"United Kingdom",
-
-
-
-    "EA":"Spain",
-
-    "EB":"Spain",
-
-    "EC":"Spain",
-
-    "ED":"Spain",
-
-    "EE":"Spain",
-
-    "EF":"Spain",
-
-    "EG":"Spain",
-
-    "EH":"Spain",
-
-
-
-    "CT":"Portugal",
-
-    "CU":"Azores",
-
-
-
-    "ON":"Belgium",
-
-    "OO":"Belgium",
-
-    "OQ":"Belgium",
-
-
-
-    "PA":"Netherlands",
-
-    "PB":"Netherlands",
-
-    "PC":"Netherlands",
-
-    "PD":"Netherlands",
-
-
-
-    "HB":"Switzerland",
-
-    "HB0":"Liechtenstein",
-
-
-
-    "OE":"Austria",
-
-    "OK":"Czech Republic",
-
-    "OM":"Slovakia",
-
-    "SP":"Poland",
-
-    "SQ":"Poland",
-
-
-
-    "LA":"Norway",
-
-    "LB":"Norway",
-
-    "LC":"Norway",
-
-    "SM":"Sweden",
-
-    "OH":"Finland",
-
-    "OY":"Faroe Islands",
-
-
-
-    "UA":"Russia",
-
-    "RA":"Russia",
-
-    "R":"Russia",
-
-    "UR":"Ukraine",
-
-    "US":"Ukraine",
-
-    "EU":"Belarus",
-
-    "EW":"Belarus",
-
-
-
-    "LZ":"Bulgaria",
-
-    "YO":"Romania",
-
-    "YP":"Romania",
-
-    "SV":"Greece",
-
-    "TA":"Turkey",
-
-
-
-    "W":"United States",
-
-    "K":"United States",
-
-    "N":"United States",
-
-    "AA":"United States",
-
-    "AB":"United States",
-
-    "AC":"United States",
-
-    "AD":"United States",
-
-    "AE":"United States",
-
-    "AF":"United States",
-
-    "AG":"United States",
-
-    "AI":"United States",
-
-
-
-    "VE":"Canada",
-
-    "VA":"Canada",
-
-    "VY":"Canada",
-
-
-
-    "XE":"Mexico",
-
-    "XA":"Mexico",
-
-
-
-    "PY":"Brazil",
-
-    "LU":"Argentina",
-
-    "CX":"Uruguay",
-
-    "CE":"Chile",
-
-    "OA":"Peru",
-
-
-
-    "JA":"Japan",
-
-    "JE":"Japan",
-
-    "JF":"Japan",
-
-    "JG":"Japan",
-
-    "JH":"Japan",
-
-    "JI":"Japan",
-
-    "JJ":"Japan",
-
-    "JK":"Japan",
-
-
-
-    "HL":"South Korea",
-
-    "DS":"South Korea",
-
-
-
-    "VK":"Australia",
-
-    "ZL":"New Zealand",
-
-    "ZS":"South Africa",
-
-
-
-    "4Z":"Israel",
-
-    "A6":"United Arab Emirates",
-
-    "A7":"Qatar",
-
-    "A9":"Bahrain",
-
-    "9V":"Singapore",
-
-    "9M":"Malaysia",
-
-    "HS":"Thailand",
-
-    "VU":"India",
-
-
-};
 
 
 
@@ -727,227 +904,50 @@ const PREFIX_COUNTRIES = {
 
 
 /* ==========================================
-   PREFIX LOOKUP
+   ADIF FIELD READER
 ========================================== */
 
 
-function getCountryFromCall(call){
+function getADIF(record,field){
 
 
-    call = call.toUpperCase();
+    const regex =
 
+    new RegExp(
 
+        "<"+field+
+        ":[0-9]+>([^<]*)",
 
-    // Supprime suffixes portable
-
-    call = call.split("/")[0];
-
-
-
-    // Recherche préfixe long en premier
-
-    for(let size=3; size>=1; size--){
-
-
-        const prefix =
-
-        call.substring(
-
-            0,
-
-            size
-
-        );
-
-
-
-        if(PREFIX_COUNTRIES[prefix]){
-
-
-            return {
-
-
-                country:PREFIX_COUNTRIES[prefix]
-
-            };
-
-
-        }
-
-
-    }
-
-
-
-    return null;
-
-
-}
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   APPROXIMATE COORDINATES BY COUNTRY
-========================================== */
-
-
-const COUNTRY_COORDS = {
-
-
-"France":[46.6,2.2],
-
-"Croatia":[45.1,15.2],
-
-"Germany":[51.1,10.4],
-
-"Italy":[42.8,12.5],
-
-"Spain":[40.4,-3.7],
-
-"Portugal":[39.5,-8],
-
-"United Kingdom":[54.5,-3],
-
-"United States":[39.8,-98.5],
-
-"Canada":[56.1,-106.3],
-
-"Japan":[36.2,138.2],
-
-"Australia":[-25.2,133.7],
-
-"New Zealand":[-40.9,174.8],
-
-"Brazil":[-14.2,-51.9],
-
-"Russia":[61.5,105.3],
-
-"China":[35.8,104.1],
-
-"India":[20.5,78.9],
-
-"South Korea":[37.5,127.9],
-
-
-};
-
-
-
-
-
-
-
-
-
-/* ==========================================
-   CALLSIGN COORDINATE FINDER
-========================================== */
-
-
-async function getCallsignCoordinates(call){
-
-
-
-    call = call.toUpperCase();
-
-
-
-    // Base locale
-
-    if(callsignDB[call]){
-
-
-        return callsignDB[call];
-
-
-    }
-
-
-
-
-
-
-    const countryInfo =
-
-    getCountryFromCall(call);
-
-
-
-
-
-    if(countryInfo){
-
-
-        const pos =
-
-        COUNTRY_COORDS[countryInfo.country];
-
-
-
-        if(pos){
-
-
-            const coords={
-
-
-                country:
-
-                countryInfo.country,
-
-
-                lat:
-
-                pos[0] + 
-
-                (Math.random()-0.5),
-
-
-                lon:
-
-                pos[1] +
-
-                (Math.random()-0.5)
-
-
-            };
-
-
-
-            callsignDB[call]=coords;
-
-
-
-            return coords;
-
-
-        }
-
-
-    }
-
-
-
-
-    console.log(
-
-        "Coordonnées manquantes:",
-
-        call
+        "i"
 
     );
 
 
 
-    return null;
+    const result =
+    record.match(regex);
+
+
+
+    return result ?
+
+    result[1].trim()
+
+    :
+
+    "";
 
 
 }
+
+
+
+
+
+
+
+
+
 /* ==========================================
    ADIF PARSER
 ========================================== */
@@ -962,13 +962,30 @@ station
 ){
 
 
+
     qsoData=[];
+
+
+
+    const stationInfo =
+    STATION_CONFIG[station];
+
+
+
+    if(!stationInfo)
+
+        return;
+
+
 
 
 
     const records =
 
-    data.split("<eor>");
+    data
+
+    .split(/<eor>/i);
+
 
 
 
@@ -978,7 +995,15 @@ station
 
 
 
-        if(!record.toLowerCase().includes("<call"))
+        if(
+
+            !record
+
+            .toLowerCase()
+
+            .includes("<call")
+
+        )
 
             continue;
 
@@ -986,54 +1011,25 @@ station
 
 
 
-        function getADIF(field){
 
+        const rawCall =
 
+        getADIF(
 
-            const regex =
+            record,
 
-            new RegExp(
+            "call"
 
-                "<"+field+
-                ":[0-9]+>([^<]*)",
-
-                "i"
-
-            );
-
-
-
-            const result =
-
-            record.match(regex);
-
-
-
-            return result ?
-
-            result[1].trim()
-
-            :
-
-            "";
-
-
-
-        }
+        );
 
 
 
 
 
-        const call =
-
-        getADIF("call");
-
-
-
-        if(!call)
+        if(!rawCall)
 
             continue;
+
 
 
 
@@ -1041,7 +1037,11 @@ station
 
         const coords =
 
-        await getCallsignCoordinates(call);
+        await getCallsignCoordinates(
+
+            rawCall
+
+        );
 
 
 
@@ -1052,12 +1052,6 @@ station
             continue;
 
 
-
-
-
-        const stationInfo =
-
-        STATION_CONFIG[station];
 
 
 
@@ -1081,66 +1075,106 @@ station
 
 
 
-        qsoData.push({
+
+        const qso={
 
 
-            call:call,
+
+            station:station,
+
+
+
+            call:normalizeCall(rawCall),
+
 
 
             country:
-
             coords.country,
 
 
-            lat:
 
+            lat:
             coords.lat,
 
 
-            lon:
 
+            lon:
             coords.lon,
 
 
-            band:
 
-            getADIF("band"),
+            band:
+            getADIF(
+
+                record,
+
+                "band"
+
+            ),
+
 
 
             mode:
+            getADIF(
 
-            getADIF("mode"),
+                record,
+
+                "mode"
+
+            ),
+
 
 
             date:
+            getADIF(
 
-            getADIF("qso_date"),
+                record,
+
+                "qso_date"
+
+            ),
+
 
 
             time:
+            getADIF(
 
-            getADIF("time_on"),
+                record,
+
+                "time_on"
+
+            ),
+
 
 
             distance:distance,
 
 
-            stationLat:
 
+            stationLat:
             stationInfo.lat,
 
 
-            stationLon:
 
+            stationLon:
             stationInfo.lon
 
 
 
-        });
+        };
+
+
+
+
+
+
+        qsoData.push(qso);
 
 
 
     }
+
+
 
 
 
@@ -1151,6 +1185,14 @@ station
         "QSOs affichables:",
 
         qsoData.length
+
+    );
+
+
+
+    console.log(
+
+        qsoData
 
     );
 
@@ -1171,12 +1213,11 @@ station
 
 
 /* ==========================================
-   LOAD LOGBOOK
+   LOAD ADIF FILE
 ========================================== */
 
 
 async function loadADIF(){
-
 
 
     try{
@@ -1198,7 +1239,7 @@ async function loadADIF(){
 
             throw new Error(
 
-                "logbook.adi introuvable"
+                "Logbook introuvable"
 
             );
 
@@ -1208,9 +1249,11 @@ async function loadADIF(){
 
 
 
+
         const text =
 
         await response.text();
+
 
 
 
@@ -1228,6 +1271,7 @@ async function loadADIF(){
             )
 
         );
+
 
 
 
@@ -1261,26 +1305,15 @@ async function loadADIF(){
 
 
 }
-
-
-
-
-
-
-
-
-
 /* ==========================================
-   DISPLAY QSOs
+   DISPLAY QSOs ON MAP
 ========================================== */
 
 
 function displayQSOs(){
 
 
-
     clearLayers();
-
 
 
 
@@ -1304,40 +1337,40 @@ function displayQSOs(){
 
 
 
-
         marker.bindPopup(`
 
         <h3>${qso.call}</h3>
 
         Pays :
-
         ${qso.country}
 
         <br>
 
         Bande :
-
         ${qso.band}
 
         <br>
 
         Mode :
-
         ${qso.mode}
 
         <br>
 
         Date :
-
         ${qso.date}
 
         <br>
 
-        Distance :
+        Heure :
+        ${qso.time}
 
+        <br>
+
+        Distance :
         ${qso.distance} km
 
         `);
+
 
 
 
@@ -1359,7 +1392,6 @@ function displayQSOs(){
 
             ],
 
-
             [
 
                 qso.lat,
@@ -1372,20 +1404,17 @@ function displayQSOs(){
 
         {
 
-
             color:"#2997ff",
 
-            weight:2
+            weight:2,
 
-
+            opacity:0.7
 
         }
-
 
         )
 
         .addTo(map);
-
 
 
 
@@ -1409,6 +1438,8 @@ function displayQSOs(){
 
 
 
+
+
     updateStats();
 
 
@@ -1425,17 +1456,24 @@ function displayQSOs(){
 
         const bounds =
 
-        L.latLngBounds(
+        L.latLngBounds();
 
-            qsoData.map(q=>[
+
+
+        qsoData.forEach(q=>{
+
+
+            bounds.extend([
 
                 q.lat,
 
                 q.lon
 
-            ])
+            ]);
 
-        );
+
+        });
+
 
 
 
@@ -1447,6 +1485,8 @@ function displayQSOs(){
             STATION_CONFIG["9A/F4MYH"].lon
 
         ]);
+
+
 
 
 
@@ -1470,6 +1510,15 @@ function displayQSOs(){
 
 
 }
+
+
+
+
+
+
+
+
+
 /* ==========================================
    STATS
 ========================================== */
@@ -1478,10 +1527,13 @@ function displayQSOs(){
 function updateStats(){
 
 
+
     const qsoNumber =
 
     document.getElementById(
+
         "qso-number"
+
     );
 
 
@@ -1489,7 +1541,9 @@ function updateStats(){
     const countryNumber =
 
     document.getElementById(
+
         "country-number"
+
     );
 
 
@@ -1497,8 +1551,12 @@ function updateStats(){
     const dxNumber =
 
     document.getElementById(
+
         "dx-number"
+
     );
+
+
 
 
 
@@ -1540,6 +1598,7 @@ function updateStats(){
         countries.size;
 
 
+
     }
 
 
@@ -1553,19 +1612,16 @@ function updateStats(){
 
 
 
-        let max = 0;
-
+        let max=0;
 
 
 
         qsoData.forEach(q=>{
 
 
-
             if(q.distance > max)
 
-                max = q.distance;
-
+                max=q.distance;
 
 
         });
@@ -1575,7 +1631,7 @@ function updateStats(){
 
         dxNumber.textContent =
 
-        max + " km";
+        max+" km";
 
 
     }
@@ -1608,7 +1664,9 @@ async function startSystem(){
 
 
 
+
     await loadCallsignDatabase();
+
 
 
 
@@ -1618,12 +1676,14 @@ async function startSystem(){
 
 
 
+
     await loadADIF();
 
 
 
-}
 
+
+}
 
 
 
@@ -1663,7 +1723,7 @@ document
 
 
 /* ==========================================
-   BUTTON PRESS EFFECT
+   BUTTON PRESS ANIMATION
 ========================================== */
 
 
