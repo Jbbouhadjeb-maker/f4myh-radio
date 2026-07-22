@@ -342,6 +342,12 @@ const PREFIX_DATABASE = {
 
 "S5": ["Slovenia",46.1,14.9],
 
+
+/* ==========================================
+   PREFIX DATABASE (SUITE)
+========================================== */
+
+
 /* Amérique du Nord */
 
 
@@ -396,8 +402,151 @@ const PREFIX_DATABASE = {
 
 
 
-/* Préfixes ajoutés */
 
+/* Amérique du Sud */
+
+
+"PY": ["Brazil",-10,-55],
+
+"PP": ["Brazil",-10,-55],
+
+
+"LU": ["Argentina",-34,-64],
+
+
+"CX": ["Uruguay",-32,-56],
+
+
+"CE": ["Chile",-30,-71],
+
+
+"HK": ["Colombia",4,-72],
+
+
+"HC": ["Ecuador",-1,-78],
+
+
+"OA": ["Peru",-9,-75],
+
+
+"YV": ["Venezuela",8,-66],
+
+
+
+
+/* Afrique */
+
+
+"ZS": ["South Africa",-30,25],
+
+"ZR": ["South Africa",-30,25],
+
+"ZT": ["South Africa",-30,25],
+
+
+"CN": ["Morocco",31,-7],
+
+
+"EA8": ["Canary Islands",28,-17],
+
+
+"5H": ["Tanzania",-6,35],
+
+
+"7X": ["Algeria",28,2],
+
+
+"SU": ["Egypt",27,30],
+
+
+"9G": ["Ghana",7,-1],
+
+
+"5N": ["Nigeria",9,8],
+
+
+"TY": ["Benin",9,2],
+
+
+
+
+/* Asie */
+
+
+"JA": ["Japan",36,138],
+
+"JE": ["Japan",36,138],
+
+"JF": ["Japan",36,138],
+
+"JG": ["Japan",36,138],
+
+"JH": ["Japan",36,138],
+
+"JI": ["Japan",36,138],
+
+"JJ": ["Japan",36,138],
+
+"JK": ["Japan",36,138],
+
+
+"HL": ["South Korea",37,127],
+
+
+"BY": ["China",35,103],
+
+"BG": ["China",35,103],
+
+
+"BV": ["Taiwan",23.7,121],
+
+
+"VU": ["India",21,78],
+
+
+"HS": ["Thailand",15,101],
+
+
+"9M": ["Malaysia",4,102],
+
+
+"YB": ["Indonesia",-2,118],
+
+
+"DU": ["Philippines",13,122],
+
+
+"4Z": ["Israel",31,35],
+
+
+"A6": ["United Arab Emirates",24,54],
+
+
+
+
+/* Océanie */
+
+
+"VK": ["Australia",-25,133],
+
+"ZL": ["New Zealand",-41,174],
+
+
+"FK": ["New Caledonia",-21,165],
+
+
+"KH": ["United States Pacific",19,-155],
+
+
+"NH": ["United States Pacific",19,-155],
+
+
+"V7": ["Marshall Islands",7,171],
+
+
+"9V": ["Singapore",1.3,103.8],
+   
+/* Préfixes ajoutés */
 
 "LB": ["Norway",61,8],
 "LG": ["Norway",61,8],
@@ -439,10 +588,11 @@ const PREFIX_DATABASE = {
 
 "SV": ["Greece",39,22],
 
-"UN": ["Kazakhstan",48,68],
+"UN": ["Kazakhstan",48,68]
 
 
 };
+
 
 
 
@@ -495,12 +645,14 @@ function getPrefix(call){
 
 
 
-    const prefixes = Object.keys(PREFIX_DATABASE)
-        .sort((a,b)=>b.length-a.length);
+    // Exemple :
+    // F4MYH -> F
+    // DL1ABC -> DL
+    // 9A5E -> 9A
 
 
-
-    for(const prefix of prefixes){
+    for(const prefix of Object.keys(PREFIX_DATABASE)
+        .sort((a,b)=>b.length-a.length)){
 
 
         if(call.startsWith(prefix)){
@@ -541,6 +693,8 @@ async function getCallsignCoordinates(call){
 
 
 
+    // Base locale en priorité
+
     if(callsignDB[call]){
 
 
@@ -552,23 +706,29 @@ async function getCallsignCoordinates(call){
 
 
 
+
+
     const prefix = getPrefix(call);
+
 
 
 
     if(prefix){
 
 
-        const data = PREFIX_DATABASE[prefix];
+        const data =
+        PREFIX_DATABASE[prefix];
 
 
 
-        const coords = {
+        const coords={
 
 
             country:data[0],
 
+
             lat:data[1],
+
 
             lon:data[2]
 
@@ -600,6 +760,7 @@ async function getCallsignCoordinates(call){
 
 
 
+
     console.warn(
 
         "Coordonnées manquantes:",
@@ -614,3 +775,1041 @@ async function getCallsignCoordinates(call){
 
 
 }
+
+/* ==========================================
+   MAP INIT
+========================================== */
+
+
+function initMap(){
+
+
+    map = L.map("map")
+
+    .setView(
+
+        [45,10],
+
+        3
+
+    );
+
+
+
+    L.tileLayer(
+
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+
+        {
+
+            attribution:
+            "© OpenStreetMap © CARTO"
+
+        }
+
+    ).addTo(map);
+
+
+
+    setTimeout(()=>{
+
+        map.invalidateSize();
+
+    },500);
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   CLEAR MAP
+========================================== */
+
+
+function clearLayers(){
+
+
+    layers.forEach(layer=>{
+
+
+        map.removeLayer(layer);
+
+
+    });
+
+
+
+    layers=[];
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   DISTANCE CALCULATION
+========================================== */
+
+
+function calculateDistance(
+
+lat1,
+
+lon1,
+
+lat2,
+
+lon2
+
+){
+
+
+    const R=6371;
+
+
+    const dLat =
+    (lat2-lat1)
+    *
+    Math.PI/180;
+
+
+    const dLon =
+    (lon2-lon1)
+    *
+    Math.PI/180;
+
+
+
+    const a =
+
+    Math.sin(dLat/2)
+
+    *
+
+    Math.sin(dLat/2)
+
+    +
+
+    Math.cos(lat1*Math.PI/180)
+
+    *
+
+    Math.cos(lat2*Math.PI/180)
+
+    *
+
+    Math.sin(dLon/2)
+
+    *
+
+    Math.sin(dLon/2);
+
+
+
+    return Math.round(
+
+        R *
+
+        2 *
+
+        Math.atan2(
+
+            Math.sqrt(a),
+
+            Math.sqrt(1-a)
+
+        )
+
+    );
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   ADIF FIELD READER
+========================================== */
+
+
+function getADIF(record,field){
+
+
+    const regex =
+
+    new RegExp(
+
+        "<"+field+
+        ":[0-9]+>([^<]*)",
+
+        "i"
+
+    );
+
+
+
+    const result =
+    record.match(regex);
+
+
+
+    return result ?
+
+    result[1].trim()
+
+    :
+
+    "";
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   ADIF PARSER
+========================================== */
+
+
+async function parseADIF(
+
+data,
+
+station
+
+){
+
+
+
+    qsoData=[];
+
+
+
+    const stationInfo =
+    STATION_CONFIG[station];
+
+
+
+    if(!stationInfo)
+
+        return;
+
+
+
+
+
+    const records =
+
+    data
+
+    .split(/<eor>/i);
+
+
+
+
+
+
+    for(const record of records){
+
+
+
+        if(
+
+            !record
+
+            .toLowerCase()
+
+            .includes("<call")
+
+        )
+
+            continue;
+
+
+
+
+
+
+        const rawCall =
+
+        getADIF(
+
+            record,
+
+            "call"
+
+        );
+
+
+
+
+
+        if(!rawCall)
+
+            continue;
+
+
+
+
+
+
+        const coords =
+
+        await getCallsignCoordinates(
+
+            rawCall
+
+        );
+
+
+
+
+
+        if(!coords)
+
+            continue;
+
+
+
+
+
+
+
+        const distance =
+
+        calculateDistance(
+
+            stationInfo.lat,
+
+            stationInfo.lon,
+
+            coords.lat,
+
+            coords.lon
+
+        );
+
+
+
+
+
+
+        const qso={
+
+
+
+            station:station,
+
+
+
+            call:normalizeCall(rawCall),
+
+
+
+            country:
+            coords.country,
+
+
+
+            lat:
+            coords.lat,
+
+
+
+            lon:
+            coords.lon,
+
+
+
+            band:
+            getADIF(
+
+                record,
+
+                "band"
+
+            ),
+
+
+
+            mode:
+            getADIF(
+
+                record,
+
+                "mode"
+
+            ),
+
+
+
+            date:
+            getADIF(
+
+                record,
+
+                "qso_date"
+
+            ),
+
+
+
+            time:
+            getADIF(
+
+                record,
+
+                "time_on"
+
+            ),
+
+
+
+            distance:distance,
+
+
+
+            stationLat:
+            stationInfo.lat,
+
+
+
+            stationLon:
+            stationInfo.lon
+
+
+
+        };
+
+
+
+
+
+
+        qsoData.push(qso);
+
+
+
+    }
+
+
+
+
+
+
+
+    console.log(
+
+        "QSOs affichables:",
+
+        qsoData.length
+
+    );
+
+
+
+    console.log(
+
+        qsoData
+
+    );
+
+
+
+    displayQSOs();
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   LOAD ADIF FILE
+========================================== */
+
+
+async function loadADIF(){
+
+
+    try{
+
+
+        const response =
+
+        await fetch(
+
+            "./logbook.adi"
+
+        );
+
+
+
+
+        if(!response.ok){
+
+
+            throw new Error(
+
+                "Logbook introuvable"
+
+            );
+
+
+        }
+
+
+
+
+
+        const text =
+
+        await response.text();
+
+
+
+
+
+        console.log(
+
+            "ADI LOADED",
+
+            text.substring(
+
+                0,
+
+                300
+
+            )
+
+        );
+
+
+
+
+
+        await parseADIF(
+
+            text,
+
+            "9A/F4MYH"
+
+        );
+
+
+
+    }
+
+
+    catch(error){
+
+
+        console.error(
+
+            "ADI ERROR",
+
+            error
+
+        );
+
+
+    }
+
+
+}
+/* ==========================================
+   DISPLAY QSOs ON MAP
+========================================== */
+
+
+function displayQSOs(){
+
+
+    clearLayers();
+
+
+
+    qsoData.forEach(qso=>{
+
+
+
+        const marker =
+
+        L.marker([
+
+            qso.lat,
+
+            qso.lon
+
+        ])
+
+        .addTo(map);
+
+
+
+
+
+        marker.bindPopup(`
+
+        <h3>${qso.call}</h3>
+
+        Pays :
+        ${qso.country}
+
+        <br>
+
+        Bande :
+        ${qso.band}
+
+        <br>
+
+        Mode :
+        ${qso.mode}
+
+        <br>
+
+        Date :
+        ${qso.date}
+
+        <br>
+
+        Heure :
+        ${qso.time}
+
+        <br>
+
+        Distance :
+        ${qso.distance} km
+
+        `);
+
+
+
+
+
+
+
+
+        const line =
+
+        L.polyline(
+
+        [
+
+            [
+
+                qso.stationLat,
+
+                qso.stationLon
+
+            ],
+
+            [
+
+                qso.lat,
+
+                qso.lon
+
+            ]
+
+        ],
+
+        {
+
+            color:"#2997ff",
+
+            weight:2,
+
+            opacity:0.7
+
+        }
+
+        )
+
+        .addTo(map);
+
+
+
+
+
+
+        layers.push(
+
+            marker,
+
+            line
+
+        );
+
+
+
+    });
+
+
+
+
+
+
+
+
+    updateStats();
+
+
+
+
+
+
+
+    // Zoom automatique
+
+    if(qsoData.length){
+
+
+
+        const bounds =
+
+        L.latLngBounds();
+
+
+
+        qsoData.forEach(q=>{
+
+
+            bounds.extend([
+
+                q.lat,
+
+                q.lon
+
+            ]);
+
+
+        });
+
+
+
+
+
+        bounds.extend([
+
+            STATION_CONFIG["9A/F4MYH"].lat,
+
+            STATION_CONFIG["9A/F4MYH"].lon
+
+        ]);
+
+
+
+
+
+
+        map.fitBounds(
+
+            bounds,
+
+            {
+
+                padding:[50,50]
+
+            }
+
+        );
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   STATS
+========================================== */
+
+
+function updateStats(){
+
+
+
+    const qsoNumber =
+
+    document.getElementById(
+
+        "qso-number"
+
+    );
+
+
+
+    const countryNumber =
+
+    document.getElementById(
+
+        "country-number"
+
+    );
+
+
+
+    const dxNumber =
+
+    document.getElementById(
+
+        "dx-number"
+
+    );
+
+
+
+
+
+
+
+    if(qsoNumber)
+
+
+        qsoNumber.textContent =
+
+        qsoData.length;
+
+
+
+
+
+
+
+    if(countryNumber){
+
+
+
+        const countries =
+
+        new Set(
+
+            qsoData.map(
+
+                q=>q.country
+
+            )
+
+        );
+
+
+
+        countryNumber.textContent =
+
+        countries.size;
+
+
+
+    }
+
+
+
+
+
+
+
+
+    if(dxNumber){
+
+
+
+        let max=0;
+
+
+
+        qsoData.forEach(q=>{
+
+
+            if(q.distance > max)
+
+                max=q.distance;
+
+
+        });
+
+
+
+
+        dxNumber.textContent =
+
+        max+" km";
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   START SYSTEM
+========================================== */
+
+
+async function startSystem(){
+
+
+
+    if(!document.getElementById("map"))
+
+        return;
+
+
+
+
+
+    await loadCallsignDatabase();
+
+
+
+
+
+    initMap();
+
+
+
+
+
+    await loadADIF();
+
+
+
+
+
+}
+
+
+
+startSystem();
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   IMAGE LAZY LOAD
+========================================== */
+
+
+document
+
+.querySelectorAll("img")
+
+.forEach(img=>{
+
+
+    img.loading="lazy";
+
+
+});
+
+
+
+
+
+
+
+
+
+/* ==========================================
+   BUTTON PRESS ANIMATION
+========================================== */
+
+
+document
+
+.querySelectorAll("a")
+
+.forEach(button=>{
+
+
+
+    button.addEventListener(
+
+        "mousedown",
+
+        ()=>{
+
+
+            button.style.scale=".96";
+
+
+        }
+
+    );
+
+
+
+
+
+    button.addEventListener(
+
+        "mouseup",
+
+        ()=>{
+
+
+            button.style.scale="1";
+
+
+        }
+
+    );
+
+
+
+});
