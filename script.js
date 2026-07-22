@@ -787,7 +787,13 @@ const PREFIX_DATABASE = {
 
 "ZP": ["Paraguay",-23,-58],
 
-"VK9": ["Australian Territories",-12,130]
+"VK9": ["Australian Territories",-12,130],
+
+"AK": ["United States",39,-98],
+
+"PU": ["Brazil",-10,-55],
+
+"US": ["Ukraine",49,32]
 
 };
 
