@@ -342,12 +342,6 @@ const PREFIX_DATABASE = {
 
 "S5": ["Slovenia",46.1,14.9],
 
-
-/* ==========================================
-   PREFIX DATABASE (SUITE)
-========================================== */
-
-
 /* Amérique du Nord */
 
 
@@ -399,149 +393,6 @@ const PREFIX_DATABASE = {
 
 
 "PJ": ["Caribbean Netherlands",12.1,-68.9],
-
-/* Amérique du Sud */
-
-
-"PY": ["Brazil",-10,-55],
-
-"PP": ["Brazil",-10,-55],
-
-
-"LU": ["Argentina",-34,-64],
-
-
-"CX": ["Uruguay",-32,-56],
-
-
-"CE": ["Chile",-30,-71],
-
-
-"HK": ["Colombia",4,-72],
-
-
-"HC": ["Ecuador",-1,-78],
-
-
-"OA": ["Peru",-9,-75],
-
-
-"YV": ["Venezuela",8,-66],
-
-
-
-
-/* Afrique */
-
-
-"ZS": ["South Africa",-30,25],
-
-"ZR": ["South Africa",-30,25],
-
-"ZT": ["South Africa",-30,25],
-
-
-"CN": ["Morocco",31,-7],
-
-
-"EA8": ["Canary Islands",28,-17],
-
-
-"5H": ["Tanzania",-6,35],
-
-
-"7X": ["Algeria",28,2],
-
-
-"SU": ["Egypt",27,30],
-
-
-"9G": ["Ghana",7,-1],
-
-
-"5N": ["Nigeria",9,8],
-
-
-"TY": ["Benin",9,2],
-
-
-
-
-/* Asie */
-
-
-"JA": ["Japan",36,138],
-
-"JE": ["Japan",36,138],
-
-"JF": ["Japan",36,138],
-
-"JG": ["Japan",36,138],
-
-"JH": ["Japan",36,138],
-
-"JI": ["Japan",36,138],
-
-"JJ": ["Japan",36,138],
-
-"JK": ["Japan",36,138],
-
-
-"HL": ["South Korea",37,127],
-
-
-"BY": ["China",35,103],
-
-"BG": ["China",35,103],
-
-
-"BV": ["Taiwan",23.7,121],
-
-
-"VU": ["India",21,78],
-
-
-"HS": ["Thailand",15,101],
-
-
-"9M": ["Malaysia",4,102],
-
-
-"YB": ["Indonesia",-2,118],
-
-
-"DU": ["Philippines",13,122],
-
-
-"4Z": ["Israel",31,35],
-
-
-"A6": ["United Arab Emirates",24,54],
-
-
-
-
-/* Océanie */
-
-
-"VK": ["Australia",-25,133],
-
-"ZL": ["New Zealand",-41,174],
-
-
-"FK": ["New Caledonia",-21,165],
-
-
-"KH": ["United States Pacific",19,-155],
-
-
-"NH": ["United States Pacific",19,-155],
-
-
-"V7": ["Marshall Islands",7,171],
-
-
-"9V": ["Singapore",1.3,103.8],
 
 
 
@@ -644,17 +495,6 @@ function getPrefix(call){
 
 
 
-    /*
-        Recherche du préfixe le plus long en premier
-
-        Exemple :
-        EA8CWA -> EA8
-        HB0XYZ -> HB0
-        KP4UFO -> KP4
-        F4MYH -> F
-    */
-
-
     const prefixes = Object.keys(PREFIX_DATABASE)
         .sort((a,b)=>b.length-a.length);
 
@@ -716,23 +556,19 @@ async function getCallsignCoordinates(call){
 
 
 
-
     if(prefix){
 
 
-        const data =
-        PREFIX_DATABASE[prefix];
+        const data = PREFIX_DATABASE[prefix];
 
 
 
-        const coords={
+        const coords = {
 
 
             country:data[0],
 
-
             lat:data[1],
-
 
             lon:data[2]
 
@@ -761,7 +597,6 @@ async function getCallsignCoordinates(call){
 
 
     }
-
 
 
 
