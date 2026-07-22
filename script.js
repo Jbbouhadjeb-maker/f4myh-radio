@@ -547,6 +547,50 @@ const PREFIX_DATABASE = {
 "9V": ["Singapore",1.3,103.8]
 
 
+/* Préfixes ajoutés */
+
+"LB": ["Norway",61,8],
+"LG": ["Norway",61,8],
+
+"LZ": ["Bulgaria",42.7,25.5],
+
+"EC": ["Spain",40,-4],
+
+"PE": ["Netherlands",52.1,5.3],
+"PD": ["Netherlands",52.1,5.3],
+
+"YC": ["Indonesia",-2,118],
+"YD": ["Indonesia",-2,118],
+
+"SA": ["Sweden",60,18],
+
+"BD": ["China",35,103],
+"BI": ["China",35,103],
+
+"BX": ["Taiwan",23.7,121],
+
+"DS": ["South Korea",37,127],
+
+"TA": ["Turkey",39,35],
+
+"JR": ["Japan",36,138],
+
+"R1": ["Russia",55,37],
+"R3": ["Russia",55,37],
+"R4": ["Russia",55,37],
+"R8": ["Russia",55,37],
+
+"RU": ["Russia",55,37],
+"RW": ["Russia",55,37],
+"RD": ["Russia",55,37],
+"UB": ["Russia",55,37],
+
+"YO": ["Romania",45.9,24.9],
+
+"SV": ["Greece",39,22],
+
+"UN": ["Kazakhstan",48,68],
+
 
 };
 
