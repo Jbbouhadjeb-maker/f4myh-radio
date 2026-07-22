@@ -588,8 +588,206 @@ const PREFIX_DATABASE = {
 
 "SV": ["Greece",39,22],
 
-"UN": ["Kazakhstan",48,68]
+"UN": ["Kazakhstan",48,68],
 
+/* ==========================================
+   NOUVEAUX PREFIXES MANQUANTS
+========================================== */
+
+
+/* Europe */
+
+"3A": ["Monaco",43.7,7.4],
+
+"4O": ["Montenegro",42.7,19.3],
+
+"9H": ["Malta",35.9,14.5],
+
+"CT": ["Portugal",39,-8],
+
+"CU": ["Azores",38.5,-28],
+
+"EA6": ["Balearic Islands",39.5,2.9],
+
+"EA9": ["Ceuta and Melilla",35.9,-5.3],
+
+"EK": ["Armenia",40.2,44.5],
+
+"ER": ["Moldova",47,28.8],
+
+"EW": ["Belarus",53.7,27.9],
+
+"EX": ["Kyrgyzstan",41.2,74.7],
+
+"EY": ["Tajikistan",38.8,71],
+
+"EZ": ["Turkmenistan",38.9,59.5],
+
+"HA": ["Hungary",47.1,19.5],
+
+"HG": ["Hungary",47.1,19.5],
+
+"HV": ["Vatican",41.9,12.45],
+
+"IS": ["Sardinia",40.1,9],
+
+"JY": ["Jordan",31,36],
+
+"JT": ["Mongolia",46.8,103],
+
+"LX": ["Luxembourg",49.8,6.1],
+
+"OH0": ["Aland Islands",60.1,19.9],
+
+"OY": ["Faroe Islands",62,7],
+
+"OX": ["Greenland",64,-51],
+
+"TF": ["Iceland",65,-18],
+
+"TK": ["Corsica",42.1,9.1],
+
+"Z6": ["Kosovo",42.6,21.1],
+
+
+
+/* Afrique */
+
+"3C": ["Equatorial Guinea",1.6,10.5],
+
+"3X": ["Guinea",9.5,-13.7],
+
+"5R": ["Madagascar",-18,47],
+
+"5S": ["Madagascar",-18,47],
+
+"5T": ["Mauritania",21,-10],
+
+"5U": ["Niger",17,9],
+
+"5V": ["Togo",8,1],
+
+"5W": ["Samoa",-13.8,-172],
+
+"5X": ["Uganda",1,32],
+
+"5Y": ["Kenya",-1,38],
+
+"6V": ["Senegal",14,-14],
+
+"6W": ["Senegal",14,-14],
+
+"7P": ["Lesotho",-29.6,28.2],
+
+"7Q": ["Malawi",-13.2,34.3],
+
+"8R": ["Guyana",5,-58.9],
+
+"9J": ["Zambia",-13.1,27.8],
+
+"9K": ["Kuwait",29.3,47.9],
+
+"9L": ["Sierra Leone",8.5,-11.8],
+
+"9N": ["Nepal",28.3,84],
+
+"9Q": ["Democratic Republic of Congo",-4,22],
+
+"9X": ["Rwanda",-1.9,29.9],
+
+"9Y": ["Trinidad and Tobago",10.7,-61.5],
+
+"ST": ["Sudan",15,32],
+
+"TR": ["Gabon",-0.8,11.6],
+
+"TZ": ["Mali",17,-4],
+
+
+
+/* Amérique */
+
+"3B8": ["Mauritius",-20.2,57.5],
+
+"3B9": ["Rodrigues Island",-19.7,63.4],
+
+"CP": ["Bolivia",-17,-65],
+
+"CO": ["Cuba",21.5,-80],
+
+"HI": ["Dominican Republic",19,-70.7],
+
+"HJ": ["Colombia",4,-72],
+
+"HR": ["Honduras",14.7,-86.2],
+
+"TI": ["Costa Rica",9.9,-84],
+
+"TG": ["Guatemala",15.5,-90],
+
+"V2": ["Antigua and Barbuda",17.1,-61.8],
+
+"V3": ["Belize",17.2,-88.5],
+
+"V4": ["Saint Kitts and Nevis",17.3,-62.7],
+
+"V5": ["Namibia",-22,17],
+
+"V6": ["Micronesia",7.4,151],
+
+"V8": ["Brunei",4.5,114.7],
+
+"VP9": ["Bermuda",32.3,-64.8],
+
+"PZ": ["Suriname",4,-56],
+
+
+
+/* Asie */
+
+"4J": ["Azerbaijan",40.4,47.8],
+
+"4K": ["Azerbaijan",40.4,47.8],
+
+"4L": ["Georgia",42,43.5],
+
+"4P": ["Sri Lanka",7.8,80.7],
+
+"4S": ["Sri Lanka",7.8,80.7],
+
+"AP": ["Pakistan",30,70],
+
+"AS": ["Pakistan",30,70],
+
+"VR": ["Hong Kong",22.3,114.2],
+
+"XU": ["Cambodia",12.5,104.9],
+
+"XV": ["Vietnam",16,108],
+
+"XW": ["Laos",18,105],
+
+"XZ": ["Myanmar",21,96],
+
+"YI": ["Iraq",33,44],
+
+"YJ": ["Vanuatu",-16,167],
+
+"YK": ["Syria",35,38],
+
+
+
+/* Océanie */
+
+"FO": ["French Polynesia",-17.7,-149],
+
+"FW": ["Wallis and Futuna",-13.3,-176],
+
+"ZK": ["New Zealand Islands",-42,173],
+
+"ZP": ["Paraguay",-23,-58],
+
+"VK9": ["Australian Territories",-12,130]
 
 };
 
