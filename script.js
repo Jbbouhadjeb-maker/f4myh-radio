@@ -229,6 +229,8 @@ const PREFIX_DATABASE = {
 
 "F": ["France",46.6,2.2],
 
+"TM": ["France",46.6,2.2],
+
 "DL": ["Germany",51,10],
 
 "DA": ["Germany",51,10],
