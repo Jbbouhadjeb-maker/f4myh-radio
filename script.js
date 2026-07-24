@@ -292,6 +292,8 @@ const PREFIX_DATABASE = {
 
 "OK": ["Czech Republic",49.8,15.5],
 
+"OL": ["Czech Republic",49.8,15.5],
+
 "OM": ["Slovakia",48.7,19.5],
 
 
