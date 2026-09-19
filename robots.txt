@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /logbook.adi
+
+Sitemap: https://jbbouhadjeb-maker.github.io/f4myh-radio/sitemap.xml

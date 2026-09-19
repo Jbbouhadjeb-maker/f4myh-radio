@@ -1,0 +1,11 @@
+# F4MYH
+
+Le site F4MYH est un site public destiné à présenter la station radioamateur F4MYH et ses contenus associés.
+
+Les pages publiques du site peuvent être consultées par les moteurs de recherche et les agents IA.
+
+Le propriétaire demande que le fichier public logbook.adi ne soit pas indexé, réutilisé ou exploité de façon systématique par les moteurs de recherche, les robots IA ou les agents d’exploration, dans la mesure où cela est possible via les directives et bonnes pratiques de publication.
+
+Le propriétaire demande également que ses contenus ne soient pas utilisés pour entraîner des modèles d’intelligence artificielle sans autorisation préalable.
+
+Cette fiche est une directive informative et de préférence, et elle ne constitue pas un mécanisme technique garantissant le respect de cette demande.
